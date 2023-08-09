@@ -16,6 +16,12 @@ If you have a `permission denied` error, just do:
 chmod u+x install.sh
 ```
 
+NOTE: Make sure that you backup your `.zshrc` file; you will need to replace it with this configuration
+
+``` sh
+ln -s ~/.config/.zshrc ~/.zshrc
+```
+
 ## Troubleshooting
 
 #### Q: When launching Emacs, I do not have your config!
