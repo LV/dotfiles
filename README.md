@@ -2,21 +2,24 @@
 
 _My dotfile configurations_
 
-## Important!
-
-Once you clone this repository, it is critical that you initialize the git submodules:
+## Getting started
 
 ``` sh
-git submodule init
-git submodule update
-~/.config/emacs/bin/doom install
-~/.config/emacs/bin/doom sync
+git clone https://github.com/LV/dotfiles.git ~/.config
+cd ~/.config/
+./install.sh
+```
+
+If you have a `permission denied` error, just do:
+
+``` sh
+chmod u+x install.sh
 ```
 
 ## Troubleshooting
 
 #### Q: When launching Emacs, I do not have your config!
-Emacs loads `init.el` in the following preference ([more info](https://www.gnu.org/software/emacs/manual/html_node/emacs/Find-Init.html))
+Emacs loads `init.el` in the following preference ([more info](https://www.gnu.org/software/emacs/manual/html_node/emacs/Find-Init.html)):
 
 1. `~/.emacs.el`
 2. `~/.emacs`
