@@ -22,6 +22,15 @@ NOTE: Make sure that you backup your `.zshrc` file; you will need to replace it 
 ln -s ~/.config/.zshrc ~/.zshrc
 ```
 
+## Requirements
+To get the full functionality of this configuration, you are going to need:
+```
+cmake
+libvterm
+```
+
+You can get away with not installing these, but you could run into problems down the line
+
 ## Troubleshooting
 
 ### ❓ When launching Emacs, I do not have your config!
