@@ -109,6 +109,9 @@
 
 (setq +doom-dashboard-ascii-banner-fn #'splashscreen-lambda)
 
+;;; Line numbers
+(setq display-line-numbers-type 'relative)
+
 ;; KEYBINDINGS
 ;;; SPC-f-z opens `.zshrc'
 (map! :leader
