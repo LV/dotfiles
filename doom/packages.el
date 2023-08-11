@@ -48,3 +48,11 @@
 ;(unpin! pinned-package another-pinned-package)
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
+
+(package! lsp-pyright)
+(after! lsp-mode
+  (use-package lsp-pyright
+    :ensure t
+    :hook (python-mode . (lambda ()
+                           (require 'lsp-pyright)
+                           (lsp))))) ; or lsp-deferred
