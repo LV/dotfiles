@@ -100,7 +100,14 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+## FUNCTIONS
+mkcdir () {
+    mkdir -p -- "$1" &&
+       cd -P -- "$1"
+}
+
 # PATH Settings
 export PATH=$PATH:~/.config/emacs/bin
+
 ## BB
 export PATH=$PATH:/opt/bb/bin
