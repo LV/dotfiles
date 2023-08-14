@@ -111,6 +111,11 @@
 ;;; Line numbers
 (setq display-line-numbers-type 'relative)
 
+;; PROGRAM TAGS
+;;; LSP Mode Which Key
+(with-eval-after-load 'lsp-mode
+  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
+
 ;; KEYBINDINGS
 ;;; SPC-f-z opens `.zshrc'
 (map! :leader
