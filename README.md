@@ -31,6 +31,13 @@ libvterm
 
 You can get away with not installing these, but you could run into problems down the line
 
+### Additional installations
+To get the full configuration working, you're going to need to install additional items:
+
+``` sh
+npm install -g pyright
+```
+
 ## Troubleshooting
 
 ### ❓ When launching Emacs, I do not have your config!
