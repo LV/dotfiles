@@ -15,7 +15,7 @@ If you have a ~permission denied~ error, just do:
 chmod u+x install.sh
 #+end_src
 
-*NOTE*: Make sure that you backup your `.zshrc` file; you will need to  replace it with this configuration
+*NOTE*: Make sure that you backup your ~.zshrc~ file; you will need to  replace it with this configuration
 #+begin_src shell
 ln -s ~/.config/.zshrc ~/.zshrc
 #+end_src
