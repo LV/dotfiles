@@ -1,0 +1,55 @@
+#+title: Dotfiles
+#+author: Luis Victoria
+
+/My dotfile configuration/
+
+* Getting started
+#+begin_src sh
+git clone https://github.com/LV/dotfiles.git ~/.config
+cd ~/.config/
+./install.sh
+#+end_src
+
+If you have a ~permission denied~ error, just do:
+#+begin_src shell
+chmod u+x install.sh
+#+end_src
+
+*NOTE*: Make sure that you backup your `.zshrc` file; you will need to  replace it with this configuration
+#+begin_src shell
+ln -s ~/.config/.zshrc ~/.zshrc
+#+end_src
+
+* Requirements
+To get the full functionality of this configuration, you are going to need:
+ - ~cmake~
+ - ~libvterm~
+
+You can get away with not installing these, but you could run into problems down the line
+
+** Additional installations
+To get the full configuration working, you're going to need to install additional items:
+
+#+begin_src shell
+npm install -g pyright
+#+end_src
+
+* Troubleshooting
+** When launching Emacs, I do not have your config loaded!
+Emacs loads ~init.el~ in the following preference (see [[https://www.gnu.org/software/emacs/manual/html_mode/emacs/Find-Init.html][more info]]):
+1. ~\~/.emacs.el~
+2. ~\~/.emacs~
+3. ~\~/.emacs.d/init~
+4. ~\~/.config/emacs~ (or ~$XDG_CONFIG_HOME~)
+
+
+Check to see if the first three locations exist, and remove them if so.
+
+** Upon launching Emacs, no window appears!
+Sometimes, you need to install additional modules within Emacs and this leads to weird things such as no window appearing. Simply launch Emacs with the following:
+
+#+begin_src shell
+emacs --debut-init
+#+end_src
+
+*NOTE*: This problem was seen on my M1 MacBookPro (see [[https://github.com/LV/dotfiles/commit/1dd1a79af6a27f9103d4c39bdbea04fde2535e0b#commitcomment-124109384][here]])
