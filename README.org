@@ -37,10 +37,10 @@ npm install -g pyright
 * Troubleshooting
 ** When launching Emacs, I do not have your config loaded!
 Emacs loads ~init.el~ in the following preference (see [[https://www.gnu.org/software/emacs/manual/html_mode/emacs/Find-Init.html][more info]]):
-1. ~\~/.emacs.el~
-2. ~\~/.emacs~
-3. ~\~/.emacs.d/init~
-4. ~\~/.config/emacs~ (or ~$XDG_CONFIG_HOME~)
+1. =~/.emacs.el=
+2. =~/.emacs=
+3. =~/.emacs.d/init=
+4. =~/.config/emacs= (or ~$XDG_CONFIG_HOME~)
 
 
 Check to see if the first three locations exist, and remove them if so.
