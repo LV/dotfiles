@@ -120,3 +120,8 @@
 ;;; SPC-f-z opens `.zshrc'
 (map! :leader
       "f z" #'(lambda () (interactive) (find-file "~/.config/.zshrc")))
+
+;;; SPC-m-j performs `org-insert-structure-template' when in *org-mode*
+(map! :map org-mode-map
+      :localleader
+      "j" #'org-insert-structure-template)
