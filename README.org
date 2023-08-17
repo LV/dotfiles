@@ -34,6 +34,29 @@ To get the full configuration working, you're going to need to install additiona
 npm install -g pyright
 #+end_src
 
+*** Font
+The font I use is /Inconsolata LGC Nerd Font/ since it includes italics (download [[https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/InconsolataLGC.zip][here]])
+
+If you're on WSL, here are the following instructions
+1. Extract the zip file, right click and install for all users
+2. Open WSL and go to the ~$HOME~ directory
+3. Create a =~/.fonts/= directory if it doesn't exist
+4. Copy all /Inconsolata LGC/ fonts into the =~/.fonts/= directory:
+   #+begin_src shell
+cp /mnt/c/Windows/Fonts/InconsolataLGC* ~/.fonts
+   #+end_src
+
+   You should type this out instead of copying the command, after typing the ~*~ character, hit *TAB* to autocomplete and get a list of all the appropriate fonts
+5. Run:
+   #+begin_src shell
+fc-cache -fv
+   #+end_src
+6. Make sure the fonts are properly loaded into WSL:
+   #+begin_src shell
+fc-list | grep "InconsolataLGC"
+   #+end_src
+   and you should see multiple fonts
+
 * Troubleshooting
 ** When launching Emacs, I do not have your config loaded!
 Emacs loads ~init.el~ in the following preference (see [[https://www.gnu.org/software/emacs/manual/html_mode/emacs/Find-Init.html][more info]]):

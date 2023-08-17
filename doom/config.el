@@ -19,12 +19,10 @@
 ;; - `doom-serif-font' -- for the `fixed-pitch-serif' face
 ;;
 ;; See 'C-h v doom-font' for documentation and more examples of what they
-;; accept. For example:
-;;
-;; (setq doom-font (font-spec :family "Fira Code" :size 12 :weight 'semi-light)
-;;       doom-variable-pitch-font (font-spec :family "Fira Sans" :size 13))
-(if (find-font (font-spec :name "Inconsolata"))
-    (setq doom-font (font-spec :family "Inconsolata" :size 20)))
+;; accept.
+(if (find-font (font-spec :name "InconsolataLGC Nerd Font"))
+    (setq doom-font (font-spec :family "InconsolataLGC Nerd Font" :size 16)
+          doom-big-font (font-spec :family "InconsolataLGC Nerd Font" :size 24)))
 
 ;; If you or Emacs can't find your font, use 'M-x describe-font' to look them
 ;; up, `M-x eval-region' to execute elisp code, and 'M-x doom/reload-font' to
