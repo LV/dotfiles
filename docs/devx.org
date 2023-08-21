@@ -6,9 +6,8 @@ To setup a DevX environment, do the following:
   - *Target Path*: =~/.config=
   - *Install Command*: /leave blank/
 
-Once the repository is created and you SSH into the environment, run the following commands:
+Once the repository is created and you SSH into the environment, run the following command:
 
 #+begin_src sh
-cd /root/.config
-make devx
+source /root/.config/scripts/bash/devx.sh
 #+end_src
