@@ -126,11 +126,18 @@
   (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
 
 ;; KEYBINDINGS
-;;; SPC-f-z opens `.zshrc'
+;;; Emacs
+;;;; SPC-f-z opens `.zshrc'
 (map! :leader
       "f z" #'(lambda () (interactive) (find-file "~/.config/.zshrc")))
 
-;;; SPC-m-j performs `org-insert-structure-template' when in *org-mode*
+;;; org-mode
+;;;; Allows you to insert source code blocks
 (map! :map org-mode-map
       :localleader
       "j" #'org-insert-structure-template)
+
+;;;; Displays images inside the editor
+(map! :map org-mode-map
+      :localleader
+      "v" #'org-display-inline-images)
