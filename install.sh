@@ -1,6 +1,3 @@
 #!/usr/bin/env sh
 
-git submodule init
-git submodule update
-~/.config/emacs/bin/doom install
-~/.config/emacs/bin/doom sync
+export PATH=$PATH:/opt/bb/bin/code-server/lib/vscode/bin/remote-cli:/opt/bb/sbin:/opt/bb/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/root/bin
