@@ -5,7 +5,5 @@
 # @version 0.1
 .PHONY: devx
 devx:
-	rm ~/.bashrc
-	cp ~/.config/bashrc/devx.sh ~/.bashrc
-
+	cp ~/.config/bashrc/devx.sh ~/etc/profile.d/
 # end
