@@ -24,6 +24,7 @@ ln -s ~/.config/.zshrc ~/.zshrc
 To get the full functionality of this configuration, you are going to need:
  - ~cmake~
  - ~libvterm~
+ - ~pandoc~
 
 You can get away with not installing these, but you could run into problems down the line
 
