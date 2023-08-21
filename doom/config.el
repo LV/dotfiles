@@ -141,3 +141,28 @@
 (map! :map org-mode-map
       :localleader
       "v" #'org-display-inline-images)
+
+;;BLOOMBERG DEV ENVIRONMENT
+;;;;Connect to Dev-X Spaces SSH and map to `SPC-o-x'
+(defun bb-open-devx-space-ssh ()
+  (interactive)
+  (setq ssh-string (read-string "Spaces ssh string: " nil nil ""))
+  (save-match-data
+    (and (string-match "ssh -t\s\\([-a-z0-9]+\\).* -it \\([a-z0-9]+\\) bash\"" ssh-string)
+         (setq spaces-host (match-string 1 ssh-string)
+               docker-id (match-string 2 ssh-string)
+               )
+         )
+    )
+  (setq space (format "/ssh:%s.dev.bloomberg.com|docker:%s:.."
+                      spaces-host
+                      docker-id
+                      )
+        )
+  (message space)
+  (dired space)
+)
+
+(map! :leader
+      (:prefix "o"
+       :desc "Open DevX Space SSH" "x" #'bb-open-devx-space-ssh))
