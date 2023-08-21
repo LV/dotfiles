@@ -1,0 +1,14 @@
+#+title: DevX instructions
+
+To setup a DevX environment, do the following:
+- Under *User Details*
+  - *Repository*: /GitHub/ | =lv/dotfiles=
+  - *Target Path*: =~/.config=
+  - *Install Command*: /leave blank/
+
+Once the repository is created and you SSH into the environment, run the following commands:
+
+#+begin_src sh
+cd /root/.config
+make devx
+#+end_src
