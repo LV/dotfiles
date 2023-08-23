@@ -142,6 +142,9 @@
       :localleader
       "v" #'org-display-inline-images)
 
+;;;; Disable spelling autocorrect popup in org-mode
+(setq company-global-modes '(not text-mode org-mode))
+
 ;;BLOOMBERG DEV ENVIRONMENT
 ;;;;Connect to Dev-X Spaces SSH and map to `SPC-o-x'
 (defun bb-open-devx-space-ssh ()
