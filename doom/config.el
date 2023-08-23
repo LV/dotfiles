@@ -131,7 +131,8 @@
 (map! :leader
       "f z" #'(lambda () (interactive) (find-file "~/.config/.zshrc")))
 
-;;; org-mode
+;; ORG-MODE
+;;; Keybindings
 ;;;; Allows you to insert source code blocks
 (map! :map org-mode-map
       :localleader
@@ -142,6 +143,7 @@
       :localleader
       "v" #'org-display-inline-images)
 
+;;; Behaviors
 ;;;; Disable spelling autocorrect popup in org-mode
 (setq company-global-modes '(not text-mode org-mode))
 
