@@ -20,6 +20,7 @@ To get the full functionality of this configuration, you are going to need:
  - ~cmake~
  - ~libvterm~
  - ~pandoc~
+ - ~clangd-12~
 
 You can get away with not installing these, but you could run into problems down the line
 

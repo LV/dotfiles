@@ -117,13 +117,18 @@
 
 (setq +doom-dashboard-ascii-banner-fn #'splashscreen-lambda)
 
+
 ;;; Line numbers
 (setq display-line-numbers-type 'relative)
 
-;; PROGRAM TAGS
+;; LSP-Mode
 ;;; LSP Mode Which Key
 (with-eval-after-load 'lsp-mode
   (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
+
+;;; Setup C++ LSP
+(require 'lsp-mode)
+(setq lsp-clients-clangd-executable "/usr/bin/clangd-12")
 
 ;; KEYBINDINGS
 ;;; Emacs
