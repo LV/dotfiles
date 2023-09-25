@@ -115,3 +115,6 @@ eval "$(pyenv init -)"
 
 ## BB
 export PATH=$PATH:/opt/bb/bin
+
+# ALIASES
+alias v="nvim"
