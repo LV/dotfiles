@@ -128,7 +128,10 @@
 
 ;;; Setup C++ LSP
 (require 'lsp-mode)
-(setq lsp-clients-clangd-executable "/usr/bin/clangd-12")
+(setq lsp-clients-clangd-executable
+      (if (executable-find "clangd")
+          "clangd"
+          "/usr/bin/clangd-12"))
 
 ;; KEYBINDINGS
 ;;; Emacs
