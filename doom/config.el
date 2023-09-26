@@ -160,6 +160,10 @@
 (setq company-global-modes '(not text-mode org-mode))
 
 ;;BLOOMBERG DEV ENVIRONMENT
+;; Give TRAMP access to BB path directories
+ (after! tramp
+   (add-to-list 'tramp-remote-process-environment "PATH=/opt/bb/bin/:/opt/bb/bin:/bb/tpgit/pint/ticker_bb_git/tp-dev-tools:/bbsrc/bin:/bbsrc/abin:/opt/ssh/bin:/bin:/usr/bin:/sbin:/usr/sbin:/opt/quest/bin:/opt/swt/common/releases/PurifyPlus.7.5/i386_linux2/bin:/opt/swt/common/totalview.2020.1.13/bin:/usr/bin/X11:/bb/util/bin:/opt/bb/bin/php-7.3/bin:/home/phab/bin:/bb/shared/bin:/bb/shared/abin:/bbsrc/training/bin:/bb/bin:/usr/local/bin:/usr/local/sbin"))
+
 ;;;;Connect to Dev-X Spaces SSH and map to `SPC-o-x'
 (defun bb-open-devx-space-ssh ()
   (interactive)
