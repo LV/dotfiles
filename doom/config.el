@@ -85,6 +85,10 @@
 ;; they are implemented.
 
 ;; CUSTOM
+;;; Editor
+;;;; Wrap Text
+(global-visual-line-mode t)
+
 ;;; Splashscreen
 (defun splashscreen-lambda ()
   (let* ((banner '("⠀⠀⠀⠀⠀⠀⢀⣤⣶⣶⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀"
