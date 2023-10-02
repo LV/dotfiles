@@ -117,4 +117,12 @@ eval "$(pyenv init -)"
 export PATH=$PATH:/opt/bb/bin
 
 # ALIASES
+alias fd=fdfind
 alias v="nvim"
+
+# Tmux always launch
+if [[ "$TERM_PROGRAM" == "WezTerm" ]]; then
+    if [ -z "$TMUX" ]; then
+        tmux attach || tmux new
+    fi
+fi
