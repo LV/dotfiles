@@ -1,3 +1,4 @@
+-- Lazy Plugin Manager
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -12,5 +13,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-  "nxvu699134/vn-night.nvim"
+  "nxvu699134/vn-night.nvim",
+  { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+  "EdenEast/nightfox.nvim",
 }, opts)

@@ -1,4 +1,6 @@
 {
+  "catppuccin": { "branch": "main", "commit": "7a4bcdadafc59a5bedbd866c643fa486d8cca4a1" },
   "lazy.nvim": { "branch": "main", "commit": "59335c5b9d116f5d3948f833288a89e2a829a005" },
+  "nightfox.nvim": { "branch": "main", "commit": "fe2fc7b93d66349eff2c5baa6cec922ee3958f56" },
   "vn-night.nvim": { "branch": "main", "commit": "79edbafd73e47fa2909cf3791fbe9e8b78b55156" }
 }
