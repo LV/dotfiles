@@ -1,2 +1,5 @@
+-- Set Leader Key to Spacebar
 vim.g.mapleader = " "
-vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
+
+-- Open Explorer
+vim.keymap.set("n", "<leader>e", vim.cmd.Ex)
