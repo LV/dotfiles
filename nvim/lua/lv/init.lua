@@ -1,3 +1,3 @@
-require("lv.editor")
-require("lv.remap")
-require("lv.lazy")
+require("lv.editor_settings")
+require("lv.remap_keys")
+require("lv.plugin_manager")
