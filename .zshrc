@@ -107,7 +107,8 @@ mkcdir () {
 }
 
 # PATH Settings
-export PATH=$PATH:~/.config/emacs/bin
+export PATH=$PATH:/usr/lib/gcc:~/.config/emacs/bin
+export PYTHONPATH=$PYTHONPATH:/opt/bb/bin/
 
 export PYENV_ROOT="$HOME/.pyenv"
 command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
