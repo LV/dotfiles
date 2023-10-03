@@ -30,5 +30,5 @@ require("lazy").setup({
   "L3MON4D3/LuaSnip",
 
   -- Git control
-  "tpope/vim-fugitive",
+  -- "tpope/vim-fugitive",
 }, opts)

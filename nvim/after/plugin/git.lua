@@ -1,2 +1,6 @@
 -- Fugitive Keybindings
-vim.keymap.set("n", "<leader>gs", vim.cmd.Git);
+--- Git Push
+-- vim.keymap.set("n", "<leader>gp", vim.cmd("Git push"));
+--- Git Status
+-- vim.keymap.set("n", "<leader>gs", vim.cmd.Git);
+
