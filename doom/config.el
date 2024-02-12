@@ -132,10 +132,20 @@
 
 ;;; Setup C++ LSP
 (require 'lsp-mode)
+
+;;;; Local clangd setup
 (setq lsp-clients-clangd-executable
       (if (executable-find "clangd")
           "clangd"
           "/usr/bin/clangd-12"))
+
+;;;; Remote clangd setup
+(lsp-register-client
+ (make-lsp-client :new-connection (lsp-tramp-connection "/opt/bb/bin/clangd")
+                  :major-modes '(c-mode c++-mode)
+                  :remote? t
+                  :server-id 'clangd-remote))
+
 
 ;; KEYBINDINGS
 ;;; Emacs
@@ -187,3 +197,16 @@
 (map! :leader
       (:prefix "o"
        :desc "Open DevX Space SSH" "x" #'bb-open-devx-space-ssh))
+
+;; Use the ellama package
+(use-package! ellama
+  ;; The code in :init block is run before the package is loaded
+  :init
+  ;; Set the language to English
+  (setopt ellama-language "English")
+  ;; Require the llm-ollama feature provided by the ellama package
+  (require 'llm-ollama)
+  ;; Set the provider for ellama
+  (setopt ellama-provider
+    (make-llm-ollama
+      :chat-model "codellama:34b" :embedding-model "codellama:34b")))
