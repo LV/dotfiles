@@ -120,6 +120,7 @@ export PATH=$PATH:/opt/bb/bin
 # ALIASES
 alias fd=fdfind
 alias v="nvim"
+alias lg="lazygit"
 
 # Tmux always launch
 if [[ "$TERM_PROGRAM" == "WezTerm" ]]; then
