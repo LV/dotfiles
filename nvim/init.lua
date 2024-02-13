@@ -217,8 +217,13 @@ require('lazy').setup({
       guicursor   = true,
     })
 
+
     vim.opt.termguicolors = true
     vim.cmd('colorscheme bluloco') -- config goes here, see below.
+
+    -- override background color
+    vim.cmd [[ hi Normal guibg=#1A1A1A]]
+    vim.cmd [[ hi NormalNC guibg=#1A1A1A ]] -- Non-current window
     end,
   },
 
