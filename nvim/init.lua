@@ -201,16 +201,24 @@ require('lazy').setup({
   },
 
   {
-    -- Theme inspired by Atom
-    'navarasu/onedark.nvim',
-    priority = 1000,
+    -- colorscheme
+    'uloco/bluloco.nvim',
     lazy = false,
+    priority = 1000,
+    dependencies = { 'rktjmp/lush.nvim' },
     config = function()
-      require('onedark').setup {
-        -- Set a style preset. 'dark' is default.
-        style = 'dark', -- dark, darker, cool, deep, warm, warmer, light
-      }
-      require('onedark').load()
+      -- your optional
+
+    require("bluloco").setup({
+      style = "dark",               -- "auto" | "dark" | "light"
+      transparent = false,
+      italics = true,
+      terminal = vim.fn.has("gui_running") == 1, -- bluoco colors are enabled in gui terminals per default.
+      guicursor   = true,
+    })
+
+    vim.opt.termguicolors = true
+    vim.cmd('colorscheme bluloco') -- config goes here, see below.
     end,
   },
 
@@ -221,7 +229,7 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = false,
-        theme = 'auto',
+        theme = 'dark',
         component_separators = '|',
         section_separators = '',
       },
