@@ -1,3 +1,10 @@
+[shell]
+program = "C:\\Windows\\System32\\wsl.exe"
+args = ["-e", "zsh", "-lic", "\"cd ~ && emacs -nw\""]
+
 [font]
-size = 14.0
-normal = { family = "GohuFont 14 Nerd Font" }
+size = 12
+
+[font.normal]
+family = "IosevkaTerm Nerd Font"
+
