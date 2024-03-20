@@ -25,8 +25,8 @@
      ((eq system-type 'windows-nt)
       (setq doom-font (font-spec :family "Liga SFMono Nerd Font" :size 16)))
      ((eq system-type 'gnu/linux) ; Linux/WSL
-      (setq doom-font (font-spec :family "Liga SFMono Nerd Font" :size 16)
-            doom-big-font (font-spec :family "Liga SFMono Nerd Font" :size 24)))
+      (setq doom-font (font-spec :family "PragmataPro Mono Liga" :size 16)
+            doom-big-font (font-spec :family "PragmataPro Mono Liga" :size 20)))
      ((eq system-type 'darwin) ; MacOS
       (setq doom-font (font-spec :family "Liga SFMono Nerd Font" :size 20)
             doom-big-font (font-spec :family "Liga SFMono Nerd Font" :size 22)))
