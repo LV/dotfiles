@@ -34,6 +34,7 @@ mkcdir () {
 }
 
 # ALIASES
+alias em="emacs -nw"
 alias fd=fdfind
-alias v="nvim"
 alias lg="lazygit"
+alias v="nvim"
