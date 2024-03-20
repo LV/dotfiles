@@ -28,8 +28,8 @@
       (setq doom-font (font-spec :family "Liga SFMono Nerd Font" :size 16)
             doom-big-font (font-spec :family "Liga SFMono Nerd Font" :size 24)))
      ((eq system-type 'darwin) ; MacOS
-      (setq doom-font (font-spec :family "Liga SFMono Nerd Font" :size 12)
-            doom-big-font (font-spec :family "Liga SFMono Nerd Font" :size 18)))
+      (setq doom-font (font-spec :family "Liga SFMono Nerd Font" :size 20)
+            doom-big-font (font-spec :family "Liga SFMono Nerd Font" :size 22)))
      (t ; Any other OS
       (setq doom-font (font-spec :family "Liga SFMono Nerd Font" :size 12)))))
 
