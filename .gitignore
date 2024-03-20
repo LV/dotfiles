@@ -4,3 +4,4 @@
 tmp/
 
 .zsh_history
+zsh/.zsh_sessions/
