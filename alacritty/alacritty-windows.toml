@@ -1,0 +1,10 @@
+[shell]
+program = "C:\\Windows\\System32\\wsl.exe"
+args = ["-e", "zsh", "-lic", "\"cd ~ && emacs -nw\""]
+
+[font]
+size = 12
+
+[font.normal]
+family = "IosevkaTerm Nerd Font"
+
