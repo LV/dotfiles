@@ -21,11 +21,11 @@ else
 fi
 
 # Tmux always launch
-if [[ "$TERM_PROGRAM" == "Alacritty" ]]; then
-    if [ -z "$TMUX" ]; then
-        tmux attach || tmux new
-    fi
-fi
+# if [[ "$TERM_PROGRAM" == "Alacritty" ]]; then
+#     if [ -z "$TMUX" ]; then
+#         tmux attach || tmux new
+#     fi
+# fi
 
 ## FUNCTIONS
 mkcdir () {
