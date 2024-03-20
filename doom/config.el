@@ -151,7 +151,7 @@
 ;;; Emacs
 ;;;; SPC-f-z opens `.zshrc'
 (map! :leader
-      "f z" #'(lambda () (interactive) (find-file "~/.config/.zshrc")))
+      "f z" #'(lambda () (interactive) (find-file "~/.config/zsh/.zshrc")))
 
 ;; ORG-MODE
 ;;; Keybindings
