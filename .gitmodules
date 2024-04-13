@@ -4,3 +4,6 @@
 [submodule "nvim"]
 	path = nvim
 	url = git@github.com:lv/nvim.git
+[submodule "kitty"]
+	path = kitty
+	url = git@github.com:LV/kitty
