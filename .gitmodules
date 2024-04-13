@@ -7,3 +7,6 @@
 [submodule "kitty"]
 	path = kitty
 	url = git@github.com:LV/kitty
+[submodule "hypr"]
+	path = hypr
+	url = git@github.com:LV/hypr
