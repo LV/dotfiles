@@ -1,3 +1,6 @@
 [submodule "emacs"]
 	path = emacs
 	url = https://github.com/doomemacs/doomemacs
+[submodule "nvim"]
+	path = nvim
+	url = git@github.com:lv/nvim.git
