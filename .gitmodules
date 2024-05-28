@@ -1,15 +1,15 @@
 [submodule "emacs"]
 	path = emacs
 	url = https://github.com/doomemacs/doomemacs
-[submodule "nvim"]
+[submodule "nvim-config"]
 	path = nvim
-	url = git@github.com:lv/nvim.git
-[submodule "kitty"]
+	url = git@github.com:lv/nvim-config.git
+[submodule "kitty-config"]
 	path = kitty
-	url = git@github.com:LV/kitty
-[submodule "hypr"]
+	url = git@github.com:LV/kitty-config.git
+[submodule "hypr-config"]
 	path = hypr
-	url = git@github.com:LV/hypr
-[submodule "doom"]
+	url = git@github.com:LV/hypr-config.git
+[submodule "doom-config"]
 	path = doom
-	url = git@github.com:LV/doom
+	url = git@github.com:LV/doom-config.git
