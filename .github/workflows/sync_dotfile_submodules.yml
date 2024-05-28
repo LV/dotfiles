@@ -2,6 +2,8 @@ name: 'Sync Dotfile Submodules'
 
 on:
   workflow_dispatch:
+  repository_dispatch:
+    types: [submodule_update]
 
 jobs:
   sync:
@@ -24,7 +26,6 @@ jobs:
       run: |
         git pull --recurse-submodules
         git submodule update --remote --recursive
-
     - name: Commit update
       run: |
         git config --global user.name 'Git bot'
