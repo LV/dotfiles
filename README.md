@@ -52,7 +52,8 @@ git submodule add <submodule-repo-url> <path/to/submodule>
 
 Example:
 ```sh
-git submodule add git@github.com:LV/example dotfiles/example
+cd path/to/dotfiles
+git submodule add git@github.com:LV/example example
 ```
 
 3. Initialize and update the submodule
@@ -62,7 +63,7 @@ git submodule update --init --recursive
 
 4. Commit the submodule
 ```sh
-git add .gitmodules dotfiles/example
+git add .gitmodules example
 git commit -m "Add new submodule \`example\`"
 git push origin master
 ```
@@ -70,7 +71,30 @@ git push origin master
 5. Set up branch tracking (to avoid detached HEAD):
 ```sh
 cd dotfiles/example
-git checkout msater
+git checkout master
 git config submodule.example.url <submodule-repo-url>
 git config submodule.example.branch master
+```
+
+### `fatal: 'example' already exists in the index`
+1. Check (and remove) existing entries:
+```sh
+cd path/to/dotfiles
+cat .gitmodules
+```
+
+If an entry such as the following shows up, remove it:
+```toml
+[submodule "example"]
+    path = example
+    url = git@github.com:LV/example-config.git
+```
+
+2. Remove the submodule
+```sh
+cd path/to/dotfiles
+git submodule deinit -f example
+rm -rf .git/modules/example
+rm -rf example
+git rm -r --cached example
 ```
