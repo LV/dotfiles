@@ -12,7 +12,7 @@ git clone https://github.com/LV/dotfiles.git
 git submodule update --init --recursive
 ```
 
-### Working with submodules
+### Working with existing submodules
 If you're trying to modify the submodules and want its changes to reflect accordingly to their repository, do the following:
 
 1. Configure settings
@@ -42,7 +42,7 @@ git push origin master
 ### Adding submodules
 If you're trying to add a new config to the _dotfiles_:
 
-1. Create an empty repo in Github
+1. Create a non-empty repo in Github (Add a README upon creation)
 
 2. Add the submodule:
 ```sh
@@ -53,7 +53,7 @@ git submodule add <submodule-repo-url> <path/to/submodule>
 Example:
 ```sh
 cd path/to/dotfiles
-git submodule add git@github.com:LV/example example
+git submodule add git@github.com:LV/example.git example
 ```
 
 3. Initialize and update the submodule

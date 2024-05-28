@@ -13,3 +13,6 @@
 [submodule "doom-config"]
 	path = doom
 	url = git@github.com:LV/doom-config.git
+[submodule "alacritty"]
+	path = alacritty
+	url = git@github.com:LV/alacritty-config.git
