@@ -10,3 +10,6 @@
 [submodule "hypr"]
 	path = hypr
 	url = git@github.com:LV/hypr
+[submodule "doom"]
+	path = doom
+	url = git@github.com:LV/doom
