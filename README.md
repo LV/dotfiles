@@ -4,7 +4,7 @@ _My personal dotfile configuration_
 ## Getting Started
 1. Clone the repository:
 ```sh
-git clone https://github.com/LV/dotfiles.git
+git clone https://github.com/LV/dotfiles.git ~/.config
 ```
 
 2. Initialize submodules:
@@ -21,6 +21,14 @@ cd path/to/submodule
 git checkout master
 git config submodule.<submodule-name>.url <submodule-repo-url>
 git config submodule.<submodule-name>.branch <branch-name>
+```
+
+Example:
+```sh
+cd example
+git checkout master
+git config submodule.example-config.url git@github.com:LV/example-config.git
+git config submodule.example-config.branch master
 ```
 
 2. Commit changes in the submodule:
@@ -53,7 +61,7 @@ git submodule add <submodule-repo-url> <path/to/submodule>
 Example:
 ```sh
 cd path/to/dotfiles
-git submodule add git@github.com:LV/example.git example
+git submodule add git@github.com:LV/example-config.git example
 ```
 
 3. Initialize and update the submodule
@@ -72,8 +80,8 @@ git push origin master
 ```sh
 cd dotfiles/example
 git checkout master
-git config submodule.example.url <submodule-repo-url>
-git config submodule.example.branch master
+git config submodule.example-config.url git@github.com:LV/example-config.git
+git config submodule.example-config.branch master
 ```
 
 ### `fatal: 'example' already exists in the index`
