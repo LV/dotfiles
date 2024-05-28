@@ -1,7 +1,6 @@
 name: 'Sync Dotfile Submodules'
 
 on:
-  # Allows you to run this workflow manually from the Actions tab or through HTTP API
   workflow_dispatch:
 
 jobs:
@@ -9,20 +8,18 @@ jobs:
     name: 'Sync Dotfile Submodules'
     runs-on: ubuntu-latest
 
-    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
       run:
         shell: bash
 
     steps:
-    # Checkout the repository to the GitHub Actions runner
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
-        token: ${{ secrets.CI_TOKEN }}
+        token: ${{ secrets.GITHUB_TOKEN }}
         submodules: true
+        fetch-depth: 0  # Ensure the entire history is fetched
 
-    # Update references
     - name: Git Submodule Update
       run: |
         git pull --recurse-submodules
@@ -32,5 +29,7 @@ jobs:
       run: |
         git config --global user.name 'Git bot'
         git config --global user.email 'bot@noreply.github.com'
-        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-        git commit -am "Auto updated submodule references" && git push || echo "No changes to commit"
+        git add .
+        git commit -m "Auto updated submodule references" || echo "No changes to commit"
+        git push origin HEAD:${GITHUB_REF#refs/heads/}
+
