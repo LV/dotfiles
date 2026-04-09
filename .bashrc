@@ -14,6 +14,9 @@ alias t="tmux"
 alias v="nvim"
 alias vd='nvim "$HOME/v/daily/$(date +%Y-%m-%d).txt"'
 
+# Exports
+export PATH="$HOME/.local/bin:$PATH"
+
 # Functions
 mkcdir () {
     mkdir -p -- "$1" &&
