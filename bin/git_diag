@@ -1,0 +1,122 @@
+#!/usr/bin/env bash
+
+since="${1:-1 year ago}"
+root='' repo='' branch=''
+
+# --- patterns ---
+pattern="${GIT_DIAG_PATTERN:-fix|bug|broken|hotfix|incident|issue|patch}"
+firefight_pattern="revert|hotfix|emergency|rollback"
+
+# --- colors ---
+GREP_COLOR_MODE='never'
+if [[ -z "${NO_COLOR:-}" ]] && [[ -t 1 ]] && [[ "${TERM:-}" != "dumb" ]] && [[ "$(tput colors 2>/dev/null || echo 0)" -ge 8 ]]; then
+  BLACK=$(tput setaf 0)
+  RED=$(tput setaf 1)
+  GREEN=$(tput setaf 2)
+  YELLOW=$(tput setaf 3)
+  BLUE=$(tput setaf 4)
+  MAGENTA=$(tput setaf 5)
+  CYAN=$(tput setaf 6)
+  WHITE=$(tput setaf 7)
+  BOLD=$(tput bold)
+  DIM=$(tput dim 2>/dev/null || true)
+  RESET=$(tput sgr0)
+  GREP_COLOR_MODE='always'
+else
+  BLACK='' RED='' GREEN='' YELLOW='' BLUE='' MAGENTA='' CYAN='' WHITE=''
+  BOLD='' DIM='' RESET=''
+fi
+
+TITLE="$CYAN"
+COLOR_COUNT="$CYAN"
+COLOR_FILE="$YELLOW"
+
+if ! root="$(git rev-parse --show-toplevel 2>/dev/null)"; then
+  printf 'git_diag: not inside a Git repository\n' >&2
+  return 1
+fi
+
+repo="${root##*/}"
+branch="$(git branch --show-current 2>/dev/null)"
+branch="${branch:-DETACHED}"
+
+_git_diag_fmt_count() {
+  local count_color="$1"
+  local text_color="$2"
+
+  awk -v count_color="$count_color" -v text_color="$text_color" -v reset="$RESET" '{
+    c=$1
+    $1=""
+    sub(/^ +/, "")
+    printf "  %s%10d%s  %s%s%s\n", count_color, c, reset, text_color, $0, reset
+  }'
+}
+
+printf '%s%sGit repo diagnostics%s\n' "$BOLD" "$TITLE" "$RESET"
+printf '%s%-11s%s %s\n' "$BOLD" "Repo:"      "$RESET" "$repo"
+printf '%s%-11s%s %s\n' "$BOLD" "Branch:"    "$RESET" "$branch"
+printf '%s%-11s%s %s\n' "$BOLD" "Timeframe:" "$RESET" "$since → now"
+printf '\n\n'
+
+printf '%s%s1) Most changed files%s\n' "$BOLD" "$TITLE" "$RESET"
+git log --since="$since" --format='' --name-only \
+  | awk 'NF' \
+  | sort \
+  | uniq -c \
+  | sort -nr \
+  | head -n 10 \
+  | _git_diag_fmt_count "$COLOR_COUNT" "$COLOR_FILE"
+
+printf '\n%s%s2) Top contributors%s\n' "$BOLD" "$TITLE" "$RESET"
+git shortlog -sn --no-merges --since="$since" \
+  | head -n 10 \
+  | awk -v count_color="$COLOR_COUNT" -v reset="$RESET" '{
+      printf "  %s%10d%s  %s\n", count_color, $1, reset, substr($0, index($0,$2))
+    }'
+
+printf '\n%s%s3) Bug/fix hotspots%s %s(pattern: %s)%s\n' "$BOLD" "$TITLE" "$RESET" "$DIM" "$pattern" "$RESET"
+git log --since="$since" --format='' --name-only -i -E --grep="$pattern" \
+  | awk 'NF' \
+  | sort \
+  | uniq -c \
+  | sort -nr \
+  | head -n 10 \
+  | _git_diag_fmt_count "$COLOR_COUNT" "$COLOR_FILE"
+
+printf '\n%s%s4) Commit count by month%s\n' "$BOLD" "$TITLE" "$RESET"
+git log --since="$since" --format='%ad' --date=format:'%Y-%m' \
+  | sort \
+  | uniq -c \
+  | sort -k2r \
+  | awk -v count_color="$COLOR_COUNT" -v mag="$MAGENTA" -v reset="$RESET" '
+    {
+      data[NR,1] = $2
+      data[NR,2] = $1
+      if (length($1) > max) max = length($1)
+    }
+    END {
+      for (i = 1; i <= NR; i++) {
+        printf "  %s%10s%s  %s%*d commits%s\n",
+          mag, data[i,1], reset,
+          count_color, max, data[i,2], reset
+      }
+    }
+  '
+
+printf '\n%s%s5) Firefighting commits%s %s(pattern: %s)%s\n' "$BOLD" "$TITLE" "$RESET" "$DIM" "$firefight_pattern" "$RESET"
+git log --since="$since" -i -E \
+  --grep="$firefight_pattern" \
+  --date=short \
+  --pretty=format:'%ad %h %s' \
+  | head -n 10 \
+  | awk -v mag="$MAGENTA" -v dim="$DIM" -v reset="$RESET" '{
+      date=$1
+      hash=$2
+      $1=$2=""
+      sub(/^  */, "")
+      printf "  %s%-10s%s  %s%-12s%s  %s\n",
+        mag, date, reset,
+        dim, hash, reset,
+        $0
+    }' \
+  | GREP_COLORS='ms=01;31' grep --color="$GREP_COLOR_MODE" -i -E "$firefight_pattern"
