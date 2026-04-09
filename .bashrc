@@ -9,6 +9,7 @@ export PROMPT_COMMAND='branch=$(git branch --show-current 2>/dev/null); PS1="\[$
 alias grep="grep --color=auto"
 alias gg="lazygit"
 alias ls='ls --color=auto'
+alias t="tmux"
 alias v="nvim"
 
 # Functions
