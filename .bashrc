@@ -11,6 +11,7 @@ alias gg="lazygit"
 alias ls='ls --color=auto'
 alias t="tmux"
 alias v="nvim"
+alias vd='nvim "$HOME/v/daily/$(date +%Y-%m-%d).txt"'
 
 # Functions
 mkcdir () {
