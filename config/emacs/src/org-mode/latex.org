@@ -1,0 +1,22 @@
+#+TITLE: Latex Configuration
+#+AUTHOR: Luis Victoria
+#+PROPERTY: header-args :tangle yes
+
+** Automatically Render $LaTeX$ Fragments
+We first need to check if $LaTeX$ packages are installed. We want to be robust and make this optional as these packages can get quite large.
+
+#+begin_src emacs-lisp
+  (defun lv/latex-packages-installed-p ()
+    "Check if necessary LaTeX packages are installed."
+    (executable-find "latex"))
+#+end_src
+
+Run the auto-rendering if the package is found
+
+#+begin_src emacs-lisp
+  (if (and (lv/latex-packages-installed-p)
+             (display-graphic-p))
+
+    ;; Scale LaTeX font
+    (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5)))
+#+end_src

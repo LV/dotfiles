@@ -1,0 +1,72 @@
+#+TITLE: Emacs Editor Configuration
+#+AUTHOR: Luis Victoria
+#+PROPERTY: header-args :tangle yes
+
+** Eshell
+#+begin_src emacs-lisp
+  (lv/org-babel-load-file "src/editor/eshell.org")
+#+end_src
+
+
+** Vterm
+#+begin_src emacs-lisp
+  (lv/org-babel-load-file "src/editor/vterm.org")
+#+end_src
+
+
+** Undo Tree
+#+begin_src emacs-lisp
+  (lv/org-babel-load-file "src/editor/undo-tree.org")
+#+end_src
+
+
+** Clipboard
+~clipetty~ fixes clipboard issues in terminal Emacs.
+
+#+begin_src emacs-lisp
+  (lv/org-babel-load-file "src/editor/clipetty.org")
+#+end_src
+
+
+** File Directory Buffer Management
+#+begin_src emacs-lisp
+  (lv/org-babel-load-file "src/editor/dirvish.org")
+#+end_src
+
+
+** Highlight TODOs
+#+begin_src emacs-lisp
+  (lv/org-babel-load-file "src/editor/hl-todo.org")
+#+end_src
+
+
+** Projectile
+Navigate and manage projects.
+
+#+begin_src emacs-lisp
+  (lv/org-babel-load-file "src/editor/projectile.org")
+#+end_src
+
+
+** Yasnippet
+Add snippets.
+
+#+begin_src emacs-lisp
+  (lv/org-babel-load-file "src/editor/yasnippet.org")
+#+end_src
+
+
+** Avy
+Jump to a specific text character in a buffer.
+
+#+begin_src emacs-lisp
+  (lv/org-babel-load-file "src/editor/avy.org")
+#+end_src
+
+
+** fzf
+Fuzzy find files by name.
+
+#+begin_src emacs-lisp
+  (lv/org-babel-load-file "src/editor/fzf.org")
+#+end_src
