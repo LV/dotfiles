@@ -1,0 +1,4 @@
+# Uncomment for the desired configuration
+# config-file = macos
+theme = BlulocoDark
+keybind = shift+enter=text:\x1b\r

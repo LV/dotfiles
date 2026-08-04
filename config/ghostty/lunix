@@ -1,0 +1,5 @@
+font-family = "PragmataPro Mono Liga"
+font-size = 24
+
+gtk-titlebar = false
+background-opacity = 0.9
