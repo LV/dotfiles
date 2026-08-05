@@ -3,6 +3,45 @@ set -e
 set -u
 set -o pipefail
 
+# Usage forms for `copy`:
+#
+#   cat foo.bar | copy
+#       Pipe a file's contents in (the classic case).
+#
+#   some_command | copy
+#       Pipe the output of any command, e.g.:
+#         git diff | copy
+#         ls -la | copy
+#         echo "hello" | copy
+#
+#   copy < foo.bar
+#       Redirect a file in directly, no cat needed.
+#
+#   copy <<< "$some_var"
+#       Here-string: copy the contents of a variable.
+#
+#   copy <<'EOF'
+#   multi
+#   line
+#   text
+#   EOF
+#       Heredoc: copy a literal multi-line block.
+#
+#   result=$(some_command); echo "$result" | copy
+#       Capture a command's output in a variable first
+#       (useful if you want to reuse/print it too), then copy it.
+#
+#   some_command | tee /dev/tty | copy
+#       See the output in your terminal AND copy it at the same time,
+#       instead of just piping blindly.
+#
+#   !! | copy
+#       Re-run your last command and copy its output
+#       (bash history expansion — only works if it's safe/cheap to re-run).
+#
+# Note: `copy foo.bar` (passing a filename as an argument) does NOT work —
+# this script only reads from stdin, it never looks at $@.
+
 if hash pbcopy 2>/dev/null; then
 	cmd='pbcopy'
 elif hash xclip 2>/dev/null; then
