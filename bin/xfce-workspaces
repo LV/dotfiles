@@ -1,0 +1,74 @@
+#!/bin/bash
+set -euo pipefail
+
+CHANNEL="xfce4-keyboard-shortcuts"
+MAPFILE="$HOME/.config/xfce-workspaces/workspace-map.conf"
+STATEFILE="$HOME/.local/state/xfce-workspaces/workspace-map.state"
+
+# US keyboard shift-symbol map for digits
+declare -A SHIFT_MAP=(
+    [1]="exclam"
+    [2]="at"
+    [3]="numbersign"
+    [4]="dollar"
+    [5]="percent"
+    [6]="asciicircum"
+    [7]="ampersand"
+    [8]="asterisk"
+    [9]="parenleft"
+    [0]="parenright"
+)
+
+declare -A NEW_MAP
+while IFS='=' read -r letter idx; do
+    [ -z "$letter" ] && continue
+    NEW_MAP["$letter"]="$idx"
+done < "$MAPFILE"
+
+OLD_LETTERS=()
+[ -f "$STATEFILE" ] && mapfile -t OLD_LETTERS < "$STATEFILE"
+
+# --- Apply current mapping ---
+for letter in "${!NEW_MAP[@]}"; do
+    idx="${NEW_MAP[$letter]}"
+    lower=$(echo "$letter" | tr '[:upper:]' '[:lower:]')
+
+    # Jump binding (Super+key) — always uses the literal key, unshifted
+    xfconf-query -c "$CHANNEL" -p "/commands/custom/<Super>${lower}" -n -t string -s "wmctrl -s $idx" 2>/dev/null \
+        || xfconf-query -c "$CHANNEL" -p "/commands/custom/<Super>${lower}" -s "wmctrl -s $idx"
+
+    # Move binding (Shift+Super+key) — use shifted symbol if this is a digit
+    if [ -n "${SHIFT_MAP[$letter]:-}" ]; then
+        move_key="${SHIFT_MAP[$letter]}"
+        move_prop="/commands/custom/<Shift><Super>${move_key}"
+    else
+        move_prop="/commands/custom/<Shift><Super>${lower}"
+    fi
+
+    xfconf-query -c "$CHANNEL" -p "$move_prop" -n -t string -s "wmctrl -r :ACTIVE: -t $idx" 2>/dev/null \
+        || xfconf-query -c "$CHANNEL" -p "$move_prop" -s "wmctrl -r :ACTIVE: -t $idx"
+
+    echo "Set $letter -> workspace $idx (jump: <Super>${lower}, move: ${move_prop#/commands/custom/})"
+done
+
+# --- Remove letters that were managed before but are no longer in the mapping ---
+for letter in "${OLD_LETTERS[@]}"; do
+    if [ -z "${NEW_MAP[$letter]:-}" ]; then
+        lower=$(echo "$letter" | tr '[:upper:]' '[:lower:]')
+        xfconf-query -c "$CHANNEL" -p "/commands/custom/<Super>${lower}" -r 2>/dev/null || true
+
+        if [ -n "${SHIFT_MAP[$letter]:-}" ]; then
+            move_key="${SHIFT_MAP[$letter]}"
+            xfconf-query -c "$CHANNEL" -p "/commands/custom/<Shift><Super>${move_key}" -r 2>/dev/null || true
+        else
+            xfconf-query -c "$CHANNEL" -p "/commands/custom/<Shift><Super>${lower}" -r 2>/dev/null || true
+        fi
+        echo "Removed $letter (no longer in mapping)"
+    fi
+done
+
+# --- Save new state ---
+mkdir -p "$(dirname "$STATEFILE")"
+printf "%s\n" "${!NEW_MAP[@]}" > "$STATEFILE"
+
+echo "Done. Applied ${#NEW_MAP[@]} letter(s)."

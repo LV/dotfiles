@@ -9,3 +9,6 @@
 - [lazygit](https://github.com/jesseduffield/lazygit)
 - [neovim](https://github.com/neovim/neovim)
 - [tmux](https://github.com/tmux/tmux)
+
+### Linux Fedora XFCE Spin
+- [wmctrl](https://linux.die.net/man/1/wmctrl)
