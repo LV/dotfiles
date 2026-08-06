@@ -1,7 +1,7 @@
--- HACK: nvim-treesitter is pinned to commit 42fc28b (2025-05), which still
--- assumes the pre-0.11 TSQueryMatch API where `match[capture_id]` is a single
--- TSNode. On Neovim 0.12, `match[capture_id]` is always a `TSNode[]` list, so
--- the predicate/directive handlers in nvim-treesitter/query_predicates.lua
+-- WORKAROUND: nvim-treesitter is pinned to commit 42fc28b (2025-05), which
+-- still assumes the pre-0.11 TSQueryMatch API where `match[capture_id]` is
+-- a single TSNode. On Neovim 0.12, `match[capture_id]` is always a `TSNode[]`
+-- list, so the predicate/directive handlers in nvim-treesitter/query_predicates.lua
 -- do `node:range()` on a plain Lua table and crash with "attempt to call
 -- method 'range' (a nil value)". This fires from `_get_injections` any time
 -- a markdown fenced code block has a language annotation (because of the
@@ -130,7 +130,7 @@ local config = function()
     },
   })
 
-  -- HACK: must run after setup() above, since that's what pulls in
+  -- WORKAROUND: must run after setup() above, since that's what pulls in
   -- nvim-treesitter.query_predicates and registers the broken handlers
   -- we're overriding. See comment on patch_query_predicates_for_nvim_0_12.
   patch_query_predicates_for_nvim_0_12()

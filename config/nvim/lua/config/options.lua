@@ -12,7 +12,7 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.termguicolors = true
 
--- HACK: works around treesitter markdown conceal_lines crash on nvim 0.12+
+-- WORKAROUND: works around treesitter markdown conceal_lines crash on nvim 0.12+
 -- (neovim/neovim#39032) -- revert to previous conceallevel once fixed upstream
 vim.opt.conceallevel = 0
 

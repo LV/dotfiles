@@ -10,7 +10,7 @@ return {
     keywords = {
       FIX  = { icon = " ", color = "error",   alt = { "FIXME", "BUG", "FIXIT", "ISSUE" } },
       TODO = { icon = " ", color = "info",    alt = { "DEBUG", "STUB" } },
-      HACK = { icon = " ", color = "warning" },
+      HACK = { icon = " ", color = "warning", alt = { "WORKAROUND" } },
       WARN = { icon = " ", color = "warning", alt = { "WARNING" } },
       PERF = { icon = " ",                    alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
       NOTE = { icon = " ", color = "hint",    alt = { "INFO" } },

@@ -1,6 +1,6 @@
-; HACK: copy of nvim-treesitter's queries/markdown/highlights.scm with the
-; `(#set! conceal_lines "")` predicates removed. These predicates crash on
-; parse with "attempt to call method 'range' (a nil value)" on nvim 0.12+.
+; WORKAROUND: copy of nvim-treesitter's queries/markdown/highlights.scm with
+; the `(#set! conceal_lines "")` predicates removed. These predicates crash
+; on parse with "attempt to call method 'range' (a nil value)" on nvim 0.12+.
 ; See neovim/neovim#39032 and nvim-treesitter/nvim-treesitter#8618.
 ; This file fully overrides (not extends) the upstream query, since we
 ; specifically need those two lines gone rather than merged in.
