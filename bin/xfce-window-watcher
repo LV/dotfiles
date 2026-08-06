@@ -1,0 +1,51 @@
+#!/bin/bash
+# Watches for new windows and moves them to their mapped workspace once,
+# based on config/xfce-workspaces/app-map.conf + workspace-map.conf.
+# Does NOT touch windows after initial placement — free to move them after.
+set -euo pipefail
+
+APPMAP="$HOME/.config/xfce-workspaces/app-map.conf"
+MAPFILE="$HOME/.config/xfce-workspaces/workspace-map.conf"
+POLL_INTERVAL=1
+
+declare -A APP_MAP
+while IFS='=' read -r class letter; do
+    [ -z "$class" ] && continue
+    APP_MAP["$class"]="$letter"
+done < "$APPMAP"
+
+declare -A WS_MAP
+while IFS='=' read -r letter idx; do
+    [ -z "$letter" ] && continue
+    WS_MAP["$letter"]="$idx"
+done < "$MAPFILE"
+
+declare -A SEEN
+
+# Seed with windows already open at startup so we never move pre-existing windows
+while read -r id _; do
+    SEEN["$id"]=1
+done < <(wmctrl -l)
+
+while true; do
+    while read -r id _; do
+        [ -n "${SEEN[$id]:-}" ] && continue
+        SEEN["$id"]=1
+
+        class_field=$(wmctrl -l -x | awk -v id="$id" '$1==id {print $3}')
+        [ -z "$class_field" ] && continue
+
+        for key in "${!APP_MAP[@]}"; do
+            if [[ "$class_field" == *"$key"* ]]; then
+                letter="${APP_MAP[$key]}"
+                idx="${WS_MAP[$letter]:-}"
+                if [ -n "$idx" ]; then
+                    wmctrl -i -r "$id" -t "$idx"
+                    echo "Moved window $id ($class_field) -> workspace $idx"
+                fi
+                break
+            fi
+        done
+    done < <(wmctrl -l)
+    sleep "$POLL_INTERVAL"
+done
