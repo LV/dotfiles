@@ -35,6 +35,7 @@ for layer in "${layers[@]}"; do
     while IFS= read -r -d '' source; do
         relative=${source#"$layer"/}
         [ "$relative" = "platform" ] && continue
+        [[ "$relative" == checks/* ]] && continue
         target="$HOME/$relative"
         target_index=-1
         for index in "${!targets[@]}"; do

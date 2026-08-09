@@ -1,0 +1,13 @@
+# Shell and editor tools
+bat
+lazygit
+neovim
+tmux
+
+# T480 desktop tools
+gammastep
+ghostty
+wmctrl
+xfce4-panel
+xfce4-volumed
+xfwm4

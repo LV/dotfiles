@@ -11,6 +11,7 @@ Dotfiles are applied as filesystem overlays in this order:
 Preview or apply a host profile explicitly:
 
 ```sh
+make check PROFILE=t480
 make plan PROFILE=t480
 make link PROFILE=t480
 ```

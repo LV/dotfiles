@@ -1,0 +1,6 @@
+# Commands used directly by shared dotfiles.
+bat
+lazygit
+nvim
+tmux
+

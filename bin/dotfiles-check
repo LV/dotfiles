@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+set -u
+
+usage() {
+    echo "Usage: $0 <profile>" >&2
+    exit 2
+}
+
+[ "$#" -eq 1 ] || usage
+profile="$1"
+
+repo=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)
+profile_root="$repo/profiles/hosts/$profile"
+[ -d "$profile_root" ] || {
+    echo "Unknown profile: $profile" >&2
+    exit 1
+}
+
+layers=("$repo/profiles/shared")
+if [ -f "$profile_root/platform" ]; then
+    platform=$(<"$profile_root/platform")
+    platform_root="$repo/profiles/platforms/$platform"
+    [ -d "$platform_root" ] && layers+=("$platform_root")
+fi
+layers+=("$profile_root")
+
+missing=0
+
+check_files() {
+    local filename="$1" label="$2" checker="$3"
+    local layer file item
+
+    echo "$label"
+    for layer in "${layers[@]}"; do
+        file="$layer/checks/$filename"
+        [ -f "$file" ] || continue
+        while IFS= read -r item || [ -n "$item" ]; do
+            item=${item%%#*}
+            item=${item%"${item##*[![:space:]]}"}
+            item=${item#"${item%%[![:space:]]*}"}
+            [ -n "$item" ] || continue
+
+            if "$checker" "$item"; then
+                printf '  OK       %s\n' "$item"
+            else
+                printf '  MISSING  %s\n' "$item"
+                missing=$((missing + 1))
+            fi
+        done < "$file"
+    done
+}
+
+has_command() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+has_dnf_package() {
+    dnf --cacheonly --setopt=logdir=/tmp/dotfiles-dnf-check \
+        list --installed --quiet "$1" >/dev/null 2>&1
+}
+
+echo "Checking profile: $profile"
+check_files commands "Commands:" has_command
+
+has_dnf_requirements=false
+for layer in "${layers[@]}"; do
+    [ -f "$layer/checks/packages.dnf" ] && has_dnf_requirements=true
+done
+
+if [ "$has_dnf_requirements" = true ]; then
+    if command -v dnf >/dev/null 2>&1; then
+        check_files packages.dnf "DNF packages:" has_dnf_package
+    else
+        echo "DNF packages:"
+        echo "  MISSING  dnf"
+        missing=$((missing + 1))
+    fi
+fi
+
+echo
+if [ "$missing" -eq 0 ]; then
+    echo "All requirements are installed."
+else
+    echo "$missing requirement(s) missing."
+    exit 1
+fi
+
