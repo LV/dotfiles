@@ -1,0 +1,7 @@
+# channel|property|type|value
+xsettings|/Net/ThemeName|string|Nashville96-Gruvbox
+xsettings|/Net/IconThemeName|string|SE98
+xsettings|/Gtk/CursorThemeName|string|Chicago95_Standard_Cursors_Black
+xsettings|/Gtk/FontName|string|CozetteVector 13
+xfwm4|/general/theme|string|Nashville96-Gruvbox
+xfwm4|/general/title_font|string|CozetteVector 13

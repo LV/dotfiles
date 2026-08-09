@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+    echo "Usage: $0 <plan|apply> <profile>" >&2
+    exit 2
+}
+
+[ "$#" -eq 2 ] || usage
+action="$1"
+profile="$2"
+[[ "$action" == "plan" || "$action" == "apply" ]] || usage
+
+repo=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)
+profile_root="$repo/profiles/hosts/$profile"
+[ -d "$profile_root" ] || {
+    echo "Unknown profile: $profile" >&2
+    exit 1
+}
+
+command -v xfconf-query >/dev/null 2>&1 || {
+    echo "Profile '$profile' declares XFCE settings, but xfconf-query is unavailable." >&2
+    exit 1
+}
+
+layers=("$repo/profiles/shared")
+if [ -f "$profile_root/platform" ]; then
+    platform=$(<"$profile_root/platform")
+    platform_root="$repo/profiles/platforms/$platform"
+    [ -d "$platform_root" ] && layers+=("$platform_root")
+fi
+layers+=("$profile_root")
+
+for layer in "${layers[@]}"; do
+    settings="$layer/settings/xfconf"
+    [ -f "$settings" ] || continue
+
+    while IFS='|' read -r channel property type value || [ -n "${channel:-}" ]; do
+        [[ "${channel:-}" == \#* || -z "${channel:-}" ]] && continue
+        current=$(xfconf-query -c "$channel" -p "$property" 2>/dev/null || true)
+
+        if [ "$current" = "$value" ]; then
+            printf 'CURRENT     %s %s = %s\n' "$channel" "$property" "$value"
+            continue
+        fi
+
+        printf 'SET         %s %s: %s -> %s\n' "$channel" "$property" "${current:-<unset>}" "$value"
+        if [ "$action" = "apply" ]; then
+            if xfconf-query -c "$channel" -p "$property" >/dev/null 2>&1; then
+                xfconf-query -c "$channel" -p "$property" -s "$value"
+            else
+                xfconf-query -c "$channel" -p "$property" -n -t "$type" -s "$value"
+            fi
+        fi
+    done < "$settings"
+done
