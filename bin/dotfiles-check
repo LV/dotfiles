@@ -77,6 +77,16 @@ if [ "$has_dnf_requirements" = true ]; then
     fi
 fi
 
+asset_manifest="$profile_root/checks/assets"
+if [ -f "$asset_manifest" ]; then
+    echo "Rice assets:"
+    "$repo/bin/dotfiles-assets" check "$profile"
+    asset_status=$?
+    if [ "$asset_status" -ne 0 ]; then
+        missing=$((missing + asset_status))
+    fi
+fi
+
 echo
 if [ "$missing" -eq 0 ]; then
     echo "All requirements are installed."
@@ -84,4 +94,3 @@ else
     echo "$missing requirement(s) missing."
     exit 1
 fi
-
