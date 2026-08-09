@@ -37,6 +37,7 @@ for layer in "${layers[@]}"; do
 
     while IFS='|' read -r channel property type value || [ -n "${channel:-}" ]; do
         [[ "${channel:-}" == \#* || -z "${channel:-}" ]] && continue
+        value=${value//\{HOME\}/$HOME}
         current=$(xfconf-query -c "$channel" -p "$property" 2>/dev/null || true)
 
         if [ "$current" = "$value" ]; then
