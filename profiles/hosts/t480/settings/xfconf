@@ -5,5 +5,5 @@ xsettings|/Gtk/CursorThemeName|string|Chicago95_Standard_Cursors_Black
 xsettings|/Gtk/FontName|font|PragmataPro Mono 11;CozetteVector 13
 xfwm4|/general/theme|string|Nashville96-Gruvbox
 xfwm4|/general/title_font|font|PragmataPro Mono 11;CozetteVector 13
-xfce4-desktop|/backdrop/screen0/monitoreDP-1/workspace0/last-image|string|{HOME}/.local/share/backgrounds/synthwave-pixel.jpg
+xfce4-desktop|/backdrop/screen0/monitoreDP-1/workspace0/last-image|string|{HOME}/.local/share/backgrounds/wallpaper.jpg
 xfce4-desktop|/backdrop/screen0/monitoreDP-1/workspace0/image-style|int|5
