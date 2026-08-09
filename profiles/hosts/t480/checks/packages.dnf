@@ -2,6 +2,7 @@
 bat
 lazygit
 neovim
+ripgrep
 tmux
 
 # T480 desktop tools
