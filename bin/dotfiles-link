@@ -1,0 +1,133 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+    echo "Usage: $0 <plan|link> <profile>" >&2
+    exit 2
+}
+
+[ "$#" -eq 2 ] || usage
+action="$1"
+profile="$2"
+[[ "$action" == "plan" || "$action" == "link" ]] || usage
+
+repo=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)
+profile_root="$repo/profiles/hosts/$profile"
+[ -d "$profile_root" ] || {
+    echo "Unknown profile: $profile" >&2
+    exit 1
+}
+
+layers=("$repo/profiles/shared")
+if [ -f "$profile_root/platform" ]; then
+    platform=$(<"$profile_root/platform")
+    platform_root="$repo/profiles/platforms/$platform"
+    if [ -d "$platform_root" ]; then
+        layers+=("$platform_root")
+    fi
+fi
+layers+=("$profile_root")
+
+declare -a sources=()
+declare -a targets=()
+
+for layer in "${layers[@]}"; do
+    while IFS= read -r -d '' source; do
+        relative=${source#"$layer"/}
+        [ "$relative" = "platform" ] && continue
+        target="$HOME/$relative"
+        target_index=-1
+        for index in "${!targets[@]}"; do
+            if [ "${targets[$index]}" = "$target" ]; then
+                target_index=$index
+                break
+            fi
+        done
+        if [ "$target_index" -eq -1 ]; then
+            targets+=("$target")
+            sources+=("$source")
+        else
+            sources[$target_index]="$source"
+        fi
+    done < <(find "$layer" -mindepth 1 \( -type f -o -type l \) -print0)
+done
+
+timestamp=$(date +%Y%m%d-%H%M%S)
+backup_root="$HOME/.dotfiles-backup/$timestamp"
+
+resolve_path() {
+    local path="$1" link directory
+    while [ -L "$path" ]; do
+        link=$(readlink "$path")
+        if [[ "$link" = /* ]]; then
+            path="$link"
+        else
+            path="$(dirname "$path")/$link"
+        fi
+    done
+    directory=$(cd -P "$(dirname "$path")" && pwd)
+    printf '%s/%s\n' "$directory" "$(basename "$path")"
+}
+
+materialize_repo_ancestor() {
+    local target="$1" relative part current="$HOME"
+    relative=${target#"$HOME"/}
+    [[ "$relative" == */* ]] || return 0
+    IFS='/' read -r -a parts <<< "${relative%/*}"
+    for part in "${parts[@]}"; do
+        [ -n "$part" ] || continue
+        current="$current/$part"
+        if [ -L "$current" ]; then
+            resolved=$(resolve_path "$current" || true)
+            case "$resolved" in
+                "$repo"/*)
+                    echo "MATERIALIZE $current"
+                    if [ "$action" = "link" ]; then
+                        unlink "$current"
+                        mkdir -p "$current"
+                    fi
+                    ;;
+                *)
+                    echo "Refusing to traverse non-dotfiles symlink: $current" >&2
+                    exit 1
+                    ;;
+            esac
+        elif [ "$action" = "link" ]; then
+            mkdir -p "$current"
+        fi
+    done
+}
+
+for index in "${!targets[@]}"; do
+    target=${targets[$index]}
+    source=${sources[$index]}
+    resolved_source=$(resolve_path "$source")
+
+    materialize_repo_ancestor "$target"
+
+    if [ -L "$target" ]; then
+        resolved_target=$(resolve_path "$target" || true)
+        if [ "$resolved_target" = "$resolved_source" ]; then
+            echo "CURRENT     $target -> $resolved_source"
+            continue
+        fi
+        echo "RELINK      $target -> $resolved_source"
+        if [ "$action" = "link" ]; then
+            unlink "$target"
+        fi
+    elif [ -e "$target" ]; then
+        relative=${target#"$HOME"/}
+        echo "BACKUP      $target -> $backup_root/$relative"
+        if [ "$action" = "link" ]; then
+            mkdir -p "$(dirname "$backup_root/$relative")"
+            mv "$target" "$backup_root/$relative"
+        fi
+    else
+        echo "LINK        $target -> $resolved_source"
+    fi
+
+    if [ "$action" = "link" ]; then
+        mkdir -p "$(dirname "$target")"
+        ln -s "$resolved_source" "$target"
+    fi
+done

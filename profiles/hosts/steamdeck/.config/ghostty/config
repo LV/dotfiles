@@ -1,4 +1,6 @@
+config-file = common
+
 font-family = "PragmataPro Mono Liga"
 font-size = 14
-
 background-opacity = 1
+
