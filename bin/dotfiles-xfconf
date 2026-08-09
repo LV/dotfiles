@@ -23,6 +23,21 @@ command -v xfconf-query >/dev/null 2>&1 || {
     exit 1
 }
 
+font_installed() {
+    local family="$1"
+    fc-list -f '%{family}\n' | awk -F, -v wanted="$family" '
+        {
+            for (i = 1; i <= NF; i++) {
+                name = $i
+                sub(/^[[:space:]]+/, "", name)
+                sub(/[[:space:]]+$/, "", name)
+                if (name == wanted) found = 1
+            }
+        }
+        END { exit !found }
+    '
+}
+
 layers=("$repo/profiles/shared")
 if [ -f "$profile_root/platform" ]; then
     platform=$(<"$profile_root/platform")
@@ -38,6 +53,18 @@ for layer in "${layers[@]}"; do
     while IFS='|' read -r channel property type value || [ -n "${channel:-}" ]; do
         [[ "${channel:-}" == \#* || -z "${channel:-}" ]] && continue
         value=${value//\{HOME\}/$HOME}
+
+        if [ "$type" = "font" ]; then
+            IFS=';' read -r preferred fallback <<< "$value"
+            family=${preferred% *}
+            if font_installed "$family"; then
+                value="$preferred"
+            else
+                value="$fallback"
+            fi
+            type=string
+        fi
+
         current=$(xfconf-query -c "$channel" -p "$property" 2>/dev/null || true)
 
         if [ "$current" = "$value" ]; then
