@@ -9,9 +9,14 @@ PROMPT_COMMAND='branch=$(git branch --show-current 2>/dev/null); PS1="\[$(tput s
 export DOTFILES="$HOME/Dev/dotfiles"
 export EDITOR="nvim"
 export PATH="$HOME/.local/bin:$DOTFILES/bin:$PATH"
+export PATH="$HOME/.cargo/bin:$PATH"
 
 # Aliases
-alias cat="bat --paging=never"
+if command -v batcat &> /dev/null; then
+    alias cat="batcat --paging=never"
+elif command -v bat &> /dev/null; then
+    alias cat="bat --paging=never"
+fi
 alias grep="grep --color=auto"
 alias gg="lazygit"
 alias ls='ls --color=auto'
