@@ -1,0 +1,6 @@
+# type|name|source|revision/checksum|source path|home-relative destination
+git-copy|Nashville96-Gruvbox|https://github.com/donfaustinocortizone/Nashville96.git|4504a325c851064d14c2ccc73eaa90884071bc50|Themes/Nashville96-Gruvbox|.themes/Nashville96-Gruvbox
+git-copy|Chicago95 Standard Black|https://github.com/grassmunk/Chicago95.git|e89583c9a0fbc5022d099fbe6f12132a756027a8|Cursors/Chicago95_Standard_Cursors_Black|.local/share/icons/Chicago95_Standard_Cursors_Black
+git-copy|SE98|https://github.com/nestoris/Win98SE.git|c224c2aef1d4c64006b61ce42c410ee90aae668b|SE98|.local/share/icons/SE98
+url|Cozette|https://github.com/the-moonwitch/Cozette/releases/download/v.1.30.0/cozette.otb|cbcb83dc626b55eae5d79808a2db2fc87bdc0886b63d0226a5789968f8392d49|-|.local/share/fonts/cozette.otb
+url|CozetteVector|https://github.com/the-moonwitch/Cozette/releases/download/v.1.30.0/CozetteVector.ttf|2d54a586f824f32d9d2dd01ec3b990c2a4d6445efa77e20177efe382ebe51627|-|.local/share/fonts/CozetteVector.ttf

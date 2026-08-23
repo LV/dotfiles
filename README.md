@@ -12,7 +12,9 @@ Preview or apply a host profile explicitly:
 
 ```sh
 make check PROFILE=t480
-make plan PROFILE=t480
+make install PROFILE=t480 DRY_RUN=1
+make install PROFILE=t480
+make link PROFILE=t480 DRY_RUN=1
 make link PROFILE=t480
 ```
 

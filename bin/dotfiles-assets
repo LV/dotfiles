@@ -1,0 +1,149 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+    echo "Usage: $0 <check|install> <profile>" >&2
+    exit 2
+}
+
+[ "$#" -eq 2 ] || usage
+action="$1"
+profile="$2"
+[[ "$action" == "check" || "$action" == "install" ]] || usage
+
+repo=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)
+profile_root="$repo/profiles/hosts/$profile"
+[ -d "$profile_root" ] || {
+    echo "Unknown profile: $profile" >&2
+    exit 1
+}
+
+layers=("$repo/profiles/shared")
+if [ -f "$profile_root/platform" ]; then
+    platform=$(<"$profile_root/platform")
+    platform_root="$repo/profiles/platforms/$platform"
+    [ -d "$platform_root" ] && layers+=("$platform_root")
+fi
+layers+=("$profile_root")
+
+manifests=()
+for layer in "${layers[@]}"; do
+    [ -f "$layer/checks/assets" ] && manifests+=("$layer/checks/assets")
+done
+
+if [ "${#manifests[@]}" -eq 0 ]; then
+    echo "No pinned resources declared for profile: $profile"
+    exit 0
+fi
+
+missing=0
+if [ "$action" = "check" ]; then
+    for manifest in "${manifests[@]}"; do
+        while IFS='|' read -r type name source revision source_path destination || [ -n "${type:-}" ]; do
+            [[ "${type:-}" == \#* || -z "${type:-}" ]] && continue
+            target="$HOME/$destination"
+            if { [ "$type" = "url" ] && [ -f "$target" ]; } || \
+               { [ "$type" != "url" ] && [ -f "$target/index.theme" ]; }; then
+                printf '  OK       %s\n' "$name"
+            else
+                printf '  MISSING  %s\n' "$name"
+                missing=$((missing + 1))
+            fi
+        done < "$manifest"
+    done
+    [ "$missing" -eq 0 ] || exit "$missing"
+    exit 0
+fi
+
+for command_name in git curl sha256sum; do
+    command -v "$command_name" >/dev/null 2>&1 || {
+        echo "Missing required command: $command_name" >&2
+        exit 1
+    }
+done
+
+work_root=$(mktemp -d /tmp/dotfiles-assets.XXXXXX)
+trap 'rm -rf -- "$work_root"' EXIT
+backup_root="$HOME/.dotfiles-backup/assets-$(date +%Y%m%d-%H%M%S)"
+fonts_changed=false
+
+backup_target() {
+    local target="$1" relative
+    if [ -e "$target" ] || [ -L "$target" ]; then
+        relative=${target#"$HOME"/}
+        mkdir -p "$(dirname "$backup_root/$relative")"
+        mv "$target" "$backup_root/$relative"
+        echo "Backed up $target -> $backup_root/$relative"
+    fi
+}
+
+checkout_paths() {
+    local source="$1" revision="$2" checkout="$3"
+    shift 3
+    git clone --quiet --filter=blob:none --no-checkout "$source" "$checkout"
+    git -C "$checkout" sparse-checkout set --no-cone "$@"
+    git -C "$checkout" checkout --quiet "$revision"
+}
+
+for manifest in "${manifests[@]}"; do
+  while IFS='|' read -r type name source revision source_path destination || [ -n "${type:-}" ]; do
+      [[ "${type:-}" == \#* || -z "${type:-}" ]] && continue
+      target="$HOME/$destination"
+
+      if [ -e "$target" ]; then
+          printf 'CURRENT     %s\n' "$name"
+          continue
+      fi
+
+      echo "Installing $name"
+      mkdir -p "$(dirname "$target")"
+
+      case "$type" in
+        git-copy)
+            checkout="$work_root/checkout"
+            checkout_paths "$source" "$revision" "$checkout" "$source_path"
+            backup_target "$target"
+            cp -a "$checkout/$source_path" "$target"
+            rm -rf -- "$checkout"
+            ;;
+        retrosmart)
+            checkout="$work_root/checkout"
+            checkout_paths "$source" "$revision" "$checkout" source index.theme links.mk COPYING
+            assembled="$work_root/retrosmart-icon-theme"
+            mkdir -p "$assembled/scalable"
+            cp "$checkout/index.theme" "$checkout/COPYING" "$assembled/"
+            cp -a "$checkout/source" "$assembled/source"
+            for icon in "$assembled"/source/*.svg; do
+                ln -s "../source/$(basename "$icon")" "$assembled/scalable/$(basename "$icon")"
+            done
+            while IFS=':' read -r alias original; do
+                alias=${alias#scalable/}
+                original=${original# source/}
+                [ -n "$alias" ] && [ -n "$original" ] || continue
+                ln -sfn "../source/$original" "$assembled/scalable/$alias"
+            done < "$checkout/links.mk"
+            backup_target "$target"
+            mv "$assembled" "$target"
+            rm -rf -- "$checkout"
+            ;;
+        url)
+            download="$work_root/download"
+            curl -fsSL "$source" -o "$download"
+            printf '%s  %s\n' "$revision" "$download" | sha256sum --check --status
+            backup_target "$target"
+            mv "$download" "$target"
+            [[ "$destination" == .local/share/fonts/* ]] && fonts_changed=true
+            ;;
+        *)
+            echo "Unknown asset type '$type' for '$name'" >&2
+            exit 1
+            ;;
+      esac
+  done < "$manifest"
+done
+
+if [ "$fonts_changed" = true ] && command -v fc-cache >/dev/null 2>&1; then
+    fc-cache -f "$HOME/.local/share/fonts"
+fi
+
+echo "Assets installed for profile: $profile"

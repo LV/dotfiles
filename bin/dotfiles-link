@@ -36,6 +36,7 @@ for layer in "${layers[@]}"; do
         relative=${source#"$layer"/}
         [ "$relative" = "platform" ] && continue
         [[ "$relative" == checks/* ]] && continue
+        [[ "$relative" == settings/* ]] && continue
         target="$HOME/$relative"
         target_index=-1
         for index in "${!targets[@]}"; do
@@ -132,3 +133,11 @@ for index in "${!targets[@]}"; do
         ln -s "$resolved_source" "$target"
     fi
 done
+
+if [ -f "$profile_root/settings/xfconf" ]; then
+    if [ "$action" = "plan" ]; then
+        "$repo/bin/dotfiles-xfconf" plan "$profile"
+    else
+        "$repo/bin/dotfiles-xfconf" apply "$profile"
+    fi
+fi

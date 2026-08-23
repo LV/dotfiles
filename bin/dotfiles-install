@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+    echo "Usage: $0 <plan|install> <profile>" >&2
+    exit 2
+}
+
+[ "$#" -eq 2 ] || usage
+action="$1"
+profile="$2"
+[[ "$action" == "plan" || "$action" == "install" ]] || usage
+
+repo=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)
+profile_root="$repo/profiles/hosts/$profile"
+[ -d "$profile_root" ] || {
+    echo "Unknown profile: $profile" >&2
+    exit 1
+}
+
+layers=("$repo/profiles/shared")
+if [ -f "$profile_root/platform" ]; then
+    platform=$(<"$profile_root/platform")
+    platform_root="$repo/profiles/platforms/$platform"
+    [ -d "$platform_root" ] && layers+=("$platform_root")
+fi
+layers+=("$profile_root")
+
+declare -a packages=()
+declare -a missing_packages=()
+
+for layer in "${layers[@]}"; do
+    requirements="$layer/checks/packages.dnf"
+    [ -f "$requirements" ] || continue
+    while IFS= read -r package || [ -n "$package" ]; do
+        package=${package%%#*}
+        package=${package%"${package##*[![:space:]]}"}
+        package=${package#"${package%%[![:space:]]*}"}
+        [ -n "$package" ] || continue
+
+        duplicate=false
+        for existing in "${packages[@]}"; do
+            [ "$existing" = "$package" ] && duplicate=true
+        done
+        [ "$duplicate" = false ] && packages+=("$package")
+    done < "$requirements"
+done
+
+if [ "${#packages[@]}" -gt 0 ]; then
+    command -v dnf >/dev/null 2>&1 || {
+        echo "DNF package requirements exist, but dnf is unavailable." >&2
+        exit 1
+    }
+
+    for package in "${packages[@]}"; do
+        if ! dnf --cacheonly --setopt=logdir=/tmp/dotfiles-dnf-check \
+            list --installed --quiet "$package" >/dev/null 2>&1; then
+            missing_packages+=("$package")
+        fi
+    done
+fi
+
+if [ "${#missing_packages[@]}" -eq 0 ]; then
+    echo "DNF packages: all installed"
+else
+    echo "DNF packages to install:"
+    printf '  %s\n' "${missing_packages[@]}"
+    if [ "$action" = "install" ]; then
+        sudo dnf install "${missing_packages[@]}"
+    fi
+fi
+
+if [ "$action" = "plan" ]; then
+    echo "Profile resources:"
+    "$repo/bin/dotfiles-assets" check "$profile" || true
+else
+    "$repo/bin/dotfiles-assets" install "$profile"
+fi
+
