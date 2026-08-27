@@ -2,5 +2,6 @@ config-file = common
 
 font-family = "PragmataPro Mono"
 font-size = 16
-confirm-close-surface = false
 
+confirm-close-surface = false
+maximize = true
