@@ -69,32 +69,32 @@ if.app-id = 'com.anthropic.claudefordesktop'
 run = 'move-node-to-workspace 🤖'
 
 [[on-window-detected]]
+if.app-id = 'com.automattic.beeper.desktop'
+run = 'move-node-to-workspace 💬'
+
+[[on-window-detected]]
 if.app-id = 'com.google.Chrome'
 run = 'move-node-to-workspace 🌐'
 
 [[on-window-detected]]
-if.app-id = 'org.mozilla.firefoxdeveloperedition'
-run = 'move-node-to-workspace 🌐'
+if.app-id = 'com.mitchellh.ghostty'
+run = 'move-node-to-workspace >_'
 
 [[on-window-detected]]
 if.app-id = 'com.parallels.desktop.console'
 run = 'move-node-to-workspace ☁️'
 
 [[on-window-detected]]
-if.app-id = 'com.automattic.beeper.desktop'
-run = 'move-node-to-workspace 💬'
-
-[[on-window-detected]]
 if.app-id = 'org.godotengine.godot'
 run = 'layout floating'
 
 [[on-window-detected]]
-if.app-id = 'org.mozilla.thunderbird'
-run = 'move-node-to-workspace 💬'
+if.app-id = 'org.mozilla.firefoxdeveloperedition'
+run = 'move-node-to-workspace 🌐'
 
 [[on-window-detected]]
-if.app-id = 'com.mitchellh.ghostty'
-run = 'move-node-to-workspace >_'
+if.app-id = 'org.mozilla.thunderbird'
+run = 'move-node-to-workspace 💬'
 
 [[on-window-detected]]
 if.app-id = 'us.zoom.xos'
