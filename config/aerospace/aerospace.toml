@@ -69,6 +69,10 @@ if.app-id = 'com.anthropic.claudefordesktop'
 run = 'move-node-to-workspace 🤖'
 
 [[on-window-detected]]
+if.app-id = 'com.electron.wispr-flow.accessibility-mac-app'
+run = 'move-node-to-workspace 🤖'
+
+[[on-window-detected]]
 if.app-id = 'com.automattic.beeper.desktop'
 run = 'move-node-to-workspace 💬'
 
