@@ -30,3 +30,14 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     vim.fn.setpos(".", save_cursor)
   end,
 })
+
+-- Prefer the project's Makefile for :make, even where a filetype plugin
+-- sets its own compiler (e.g. typst's ftplugin sets makeprg to `typst compile`)
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "*",
+  callback = function()
+    if vim.fn.filereadable("Makefile") == 1 then
+      vim.opt_local.makeprg = "make"
+    end
+  end,
+})
