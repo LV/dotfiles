@@ -18,6 +18,7 @@ vim.opt.conceallevel = 0
 
 -- Behavior
 vim.opt.encoding = "UTF-8"
+vim.opt.ignorecase = true
 
 -- Remove trailing whitespace and newlines on save
 vim.api.nvim_create_autocmd("BufWritePre", {
