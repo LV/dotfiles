@@ -23,7 +23,7 @@ if hostname == "FY1V4T0VFJ" then  -- Work environment
   TxtFilename = "bb.txt"
   TxtPath = "/Users/lvictoria7/" .. TxtFilename .. "/" .. TxtFilename
 else  -- Default personal environment
-  VaultPath = "~/v"
+  VaultPath = "~/Vault"
   TxtFilename = "lv.txt"
-  TxtPath = "~/v/" .. TxtFilename
+  TxtPath = "~/Vault/" .. TxtFilename
 end

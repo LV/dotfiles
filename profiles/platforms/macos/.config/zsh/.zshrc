@@ -8,9 +8,9 @@ alias grep="grep --color=auto"
 alias ls="ls -G"
 alias t="tmux"
 alias v="nvim"
-alias vd='nvim "$HOME/v/daily/$(date +%Y-%m-%d).txt"'
-alias vdn='nvim "$HOME/v/daily/$(date -v+1d +%Y-%m-%d).txt"'
-alias vdp='nvim "$HOME/v/daily/$(date -v-1d +%Y-%m-%d).txt"'
+alias vd='nvim "$HOME/Vault/Daily/$(date +%Y-%m-%d).md"'
+alias vdn='nvim "$HOME/Vault/Daily/$(date -v+1d +%Y-%m-%d).md"'
+alias vdp='nvim "$HOME/Vault/Daily/$(date -v-1d +%Y-%m-%d).md"'
 
 ## FUNCTIONS
 mkcdir () {

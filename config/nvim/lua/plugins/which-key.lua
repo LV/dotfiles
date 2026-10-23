@@ -82,9 +82,9 @@ return {
 
       { "<leader>v", group = "vault" },
       { "<leader>vd", group = "daily" },
-      { "<leader>vdd", function() vim.cmd(string.format("tabedit %s/daily/%s.txt", VaultPath, os.date("%Y-%m-%d"))) end, desc = "Open today's daily note" },
-      { "<leader>vdn", function() vim.cmd(string.format("tabedit %s/daily/%s.txt", VaultPath, os.date("%Y-%m-%d", os.time() + 86400))) end, desc = "Open tomorrow's daily note" },
-      { "<leader>vdp", function() vim.cmd(string.format("tabedit %s/daily/%s.txt", VaultPath, os.date("%Y-%m-%d", os.time() - 86400))) end, desc = "Open yesterday's daily note" },
+      { "<leader>vdd", function() vim.cmd(string.format("tabedit %s/Daily/%s.md", VaultPath, os.date("%Y-%m-%d"))) end, desc = "Open today's daily note" },
+      { "<leader>vdn", function() vim.cmd(string.format("tabedit %s/Daily/%s.md", VaultPath, os.date("%Y-%m-%d", os.time() + 86400))) end, desc = "Open tomorrow's daily note" },
+      { "<leader>vdp", function() vim.cmd(string.format("tabedit %s/Daily/%s.md", VaultPath, os.date("%Y-%m-%d", os.time() - 86400))) end, desc = "Open yesterday's daily note" },
       { "<leader>vv", function() Snacks.scratch({file = TxtPath, ft = "text", icon = "λ", name = TxtFilename}) end, desc = "Open lv.txt" },
 
       { "<leader>w", group = "window" },
@@ -98,4 +98,3 @@ return {
     },
   },
 }
-
