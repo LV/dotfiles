@@ -76,12 +76,12 @@ if.app-id = 'com.anthropic.claudefordesktop'
 run = 'move-node-to-workspace 🤖'
 
 [[on-window-detected]]
-if.app-id = 'com.electron.wispr-flow'
-run = 'move-node-to-workspace 🤖'
-
-[[on-window-detected]]
 if.app-id = 'com.automattic.beeper.desktop'
 run = 'move-node-to-workspace 💬'
+
+[[on-window-detected]]
+if.app-id = 'com.electron.wispr-flow'
+run = 'move-node-to-workspace 🤖'
 
 [[on-window-detected]]
 if.app-id = 'com.google.Chrome'
@@ -92,12 +92,12 @@ if.app-id = 'com.mitchellh.ghostty'
 run = 'move-node-to-workspace ">_"'
 
 [[on-window-detected]]
-if.app-id = 'com.parallels.desktop.console'
-run = 'move-node-to-workspace ☁️'
-
-[[on-window-detected]]
 if.app-id = 'com.obsproject.obs-studio'
 run = 'move-node-to-workspace "🎥"'
+
+[[on-window-detected]]
+if.app-id = 'com.parallels.desktop.console'
+run = 'move-node-to-workspace ☁️'
 
 [[on-window-detected]]
 if.app-id = 'org.godotengine.godot'
