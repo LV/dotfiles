@@ -74,7 +74,7 @@ if.app-id = 'com.anthropic.claudefordesktop'
 run = 'move-node-to-workspace 🤖'
 
 [[on-window-detected]]
-if.app-id = 'com.electron.wispr-flow.accessibility-mac-app'
+if.app-id = 'com.electron.wispr-flow'
 run = 'move-node-to-workspace 🤖'
 
 [[on-window-detected]]
