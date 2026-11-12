@@ -1,6 +1,0 @@
-config-file = common
-
-font-family = "PragmataPro Mono Liga"
-font-size = 12
-gtk-titlebar = true
-
