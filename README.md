@@ -6,16 +6,16 @@ Dotfiles are applied as filesystem overlays in this order:
 
 1. `profiles/shared`
 2. `profiles/platforms/<platform>`
-3. `profiles/hosts/<host>`
+3. `profiles/hosts/<hostname>`
 
-Preview or apply a host profile explicitly:
+Preview or apply this host's profile:
 
 ```sh
-make check PROFILE=t480
-make install PROFILE=t480 DRY_RUN=1
-make install PROFILE=t480
-make link PROFILE=t480 DRY_RUN=1
-make link PROFILE=t480
+make check
+make install DRY_RUN=1
+make install
+make link DRY_RUN=1
+make link
 ```
 
 Nothing is linked merely because it exists under `config/`.
