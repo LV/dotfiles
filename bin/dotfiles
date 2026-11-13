@@ -166,13 +166,21 @@ link() {
         fi
     done
 
-    # Prune links left behind by entries deleted from the repo. Only links this
-    # script could have made qualify: absolute paths into the repo whose target
-    # no longer exists. Links that still resolve are left alone. ~/Library is
-    # skipped for speed, and the repo for its own internal relative links.
-    local stale
+    # Prune links into the repo that the current profiles don't produce, whether
+    # their target still exists (profile entry removed) or not (content deleted).
+    # Only links this script could have made qualify: absolute paths into the
+    # repo. ~/Library is skipped for speed, and the repo for its own internal
+    # relative links.
+    local stale managed
     while IFS= read -r -d '' stale; do
-        [ -e "$stale" ] && continue
+        managed=false
+        for target in "${targets[@]}"; do
+            if [ "$target" = "$stale" ]; then
+                managed=true
+                break
+            fi
+        done
+        [ "$managed" = true ] && continue
         echo "PRUNE       $stale -> $(readlink "$stale")"
         if [ "$action" = "link" ]; then
             unlink "$stale"
