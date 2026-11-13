@@ -7,21 +7,14 @@ usage() {
 }
 
 repo=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)
-host=$(uname -n | cut -d. -f1)
-profile_root="$repo/profiles/hosts/$host"
-
-layers=("$repo/profiles/shared")
-if [ -f "$profile_root/platform" ]; then
-    platform=$(<"$profile_root/platform")
-    platform_root="$repo/profiles/platforms/$platform"
-    [ -d "$platform_root" ] && layers+=("$platform_root")
-fi
-layers+=("$profile_root")
+platform=$(uname -s | tr '[:upper:]' '[:lower:]')
+platform_root="$repo/profiles/platforms/$platform"
+layers=("$repo/profiles/shared" "$platform_root")
 
 check() {
     local missing=0 layer file item
 
-    echo "Checking profile: $host"
+    echo "Checking platform: $platform"
     echo "Commands:"
     for layer in "${layers[@]}"; do
         file="$layer/checks/commands"
@@ -102,7 +95,6 @@ link() {
     for layer in "${layers[@]}"; do
         while IFS= read -r -d '' source; do
             relative=${source#"$layer"/}
-            [ "$relative" = "platform" ] && continue
             [[ "$relative" == checks/* ]] && continue
             target="$HOME/$relative"
             target_index=-1
@@ -174,8 +166,8 @@ case "${1:-}" in
         ;;
 esac
 
-[ -d "$profile_root" ] || {
-    echo "No matching host profile found for hostname: $host" >&2
+[ -d "$platform_root" ] || {
+    echo "No matching platform profile found for: $platform" >&2
     exit 1
 }
 

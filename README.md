@@ -5,10 +5,9 @@
 Dotfiles are applied as filesystem overlays in this order:
 
 1. `profiles/shared`
-2. `profiles/platforms/<platform>`
-3. `profiles/hosts/<hostname>`
+2. `profiles/platforms/<platform>` (lowercase `uname -s`: `darwin`, `linux`)
 
-Preview or apply this host's profile:
+Preview or apply:
 
 ```sh
 ./bin/dotfiles check
