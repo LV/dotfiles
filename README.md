@@ -18,6 +18,8 @@ make link DRY_RUN=1
 make link
 ```
 
+NixOS hosts don't use profiles; home-manager picks files from this repo directly.
+
 Nothing is linked merely because it exists under `config/`.
 
 ## Acknowledgements
