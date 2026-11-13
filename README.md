@@ -17,7 +17,9 @@ Preview or apply:
 
 NixOS hosts don't use profiles; home-manager picks files from this repo directly.
 
-Nothing is linked merely because it exists under `config/`.
+Config content lives in `config/<program>/`. Everything under `profiles/` is a
+relative symlink into `config/`, except `checks/`. Nothing in `config/` is
+linked unless a profile points at it.
 
 ## Acknowledgements
 - `git_diag` was made thanks to [this post](https://piechowski.io/post/git-commands-before-reading-code/)
