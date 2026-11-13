@@ -54,38 +54,8 @@ has_command() {
     command -v "$1" >/dev/null 2>&1
 }
 
-has_dnf_package() {
-    dnf --cacheonly --setopt=logdir=/tmp/dotfiles-dnf-check \
-        list --installed --quiet "$1" >/dev/null 2>&1
-}
-
 echo "Checking profile: $profile"
 check_files commands "Commands:" has_command
-
-has_dnf_requirements=false
-for layer in "${layers[@]}"; do
-    [ -f "$layer/checks/packages.dnf" ] && has_dnf_requirements=true
-done
-
-if [ "$has_dnf_requirements" = true ]; then
-    if command -v dnf >/dev/null 2>&1; then
-        check_files packages.dnf "DNF packages:" has_dnf_package
-    else
-        echo "DNF packages:"
-        echo "  MISSING  dnf"
-        missing=$((missing + 1))
-    fi
-fi
-
-asset_manifest="$profile_root/checks/assets"
-if [ -f "$asset_manifest" ]; then
-    echo "Rice assets:"
-    "$repo/bin/dotfiles-assets" check "$profile"
-    asset_status=$?
-    if [ "$asset_status" -ne 0 ]; then
-        missing=$((missing + asset_status))
-    fi
-fi
 
 echo
 if [ "$missing" -eq 0 ]; then

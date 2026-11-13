@@ -12,8 +12,6 @@ Preview or apply this host's profile:
 
 ```sh
 make check
-make install DRY_RUN=1
-make install
 make link DRY_RUN=1
 make link
 ```
@@ -31,6 +29,3 @@ Nothing is linked merely because it exists under `config/`.
 - [lazygit](https://github.com/jesseduffield/lazygit)
 - [neovim](https://github.com/neovim/neovim)
 - [tmux](https://github.com/tmux/tmux)
-
-### Linux Fedora XFCE Spin
-- [wmctrl](https://linux.die.net/man/1/wmctrl)
