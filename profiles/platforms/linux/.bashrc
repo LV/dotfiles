@@ -1,1 +1,1 @@
-../../../.bashrc
+../../../config/bash/.bashrc
