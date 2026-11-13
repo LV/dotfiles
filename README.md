@@ -11,9 +11,9 @@ Dotfiles are applied as filesystem overlays in this order:
 Preview or apply this host's profile:
 
 ```sh
-make check
-make link DRY_RUN=1
-make link
+./bin/dotfiles check
+./bin/dotfiles link --dry-run
+./bin/dotfiles link
 ```
 
 NixOS hosts don't use profiles; home-manager picks files from this repo directly.

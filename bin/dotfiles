@@ -1,0 +1,182 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+    echo "Usage: dotfiles check | dotfiles link [--dry-run]" >&2
+    exit 2
+}
+
+repo=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)
+host=$(uname -n | cut -d. -f1)
+profile_root="$repo/profiles/hosts/$host"
+
+layers=("$repo/profiles/shared")
+if [ -f "$profile_root/platform" ]; then
+    platform=$(<"$profile_root/platform")
+    platform_root="$repo/profiles/platforms/$platform"
+    [ -d "$platform_root" ] && layers+=("$platform_root")
+fi
+layers+=("$profile_root")
+
+check() {
+    local missing=0 layer file item
+
+    echo "Checking profile: $host"
+    echo "Commands:"
+    for layer in "${layers[@]}"; do
+        file="$layer/checks/commands"
+        [ -f "$file" ] || continue
+        while IFS= read -r item || [ -n "$item" ]; do
+            item=${item%%#*}
+            item=${item%"${item##*[![:space:]]}"}
+            item=${item#"${item%%[![:space:]]*}"}
+            [ -n "$item" ] || continue
+
+            if command -v "$item" >/dev/null 2>&1; then
+                printf '  OK       %s\n' "$item"
+            else
+                printf '  MISSING  %s\n' "$item"
+                missing=$((missing + 1))
+            fi
+        done < "$file"
+    done
+
+    echo
+    if [ "$missing" -eq 0 ]; then
+        echo "All requirements are installed."
+    else
+        echo "$missing requirement(s) missing."
+        exit 1
+    fi
+}
+
+resolve_path() {
+    local path="$1" link directory
+    while [ -L "$path" ]; do
+        link=$(readlink "$path")
+        if [[ "$link" = /* ]]; then
+            path="$link"
+        else
+            path="$(dirname "$path")/$link"
+        fi
+    done
+    directory=$(cd -P "$(dirname "$path")" && pwd)
+    printf '%s/%s\n' "$directory" "$(basename "$path")"
+}
+
+materialize_repo_ancestor() {
+    local target="$1" relative part current="$HOME"
+    relative=${target#"$HOME"/}
+    [[ "$relative" == */* ]] || return 0
+    IFS='/' read -r -a parts <<< "${relative%/*}"
+    for part in "${parts[@]}"; do
+        [ -n "$part" ] || continue
+        current="$current/$part"
+        if [ -L "$current" ]; then
+            resolved=$(resolve_path "$current" || true)
+            case "$resolved" in
+                "$repo"/*)
+                    echo "MATERIALIZE $current"
+                    if [ "$action" = "link" ]; then
+                        unlink "$current"
+                        mkdir -p "$current"
+                    fi
+                    ;;
+                *)
+                    echo "Refusing to traverse non-dotfiles symlink: $current" >&2
+                    exit 1
+                    ;;
+            esac
+        elif [ "$action" = "link" ]; then
+            mkdir -p "$current"
+        fi
+    done
+}
+
+link() {
+    local -a sources=() targets=()
+    local layer source relative target target_index index resolved_source resolved_target
+    local backup_root
+    backup_root="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
+
+    for layer in "${layers[@]}"; do
+        while IFS= read -r -d '' source; do
+            relative=${source#"$layer"/}
+            [ "$relative" = "platform" ] && continue
+            [[ "$relative" == checks/* ]] && continue
+            target="$HOME/$relative"
+            target_index=-1
+            for index in "${!targets[@]}"; do
+                if [ "${targets[$index]}" = "$target" ]; then
+                    target_index=$index
+                    break
+                fi
+            done
+            if [ "$target_index" -eq -1 ]; then
+                targets+=("$target")
+                sources+=("$source")
+            else
+                sources[$target_index]="$source"
+            fi
+        done < <(find "$layer" -mindepth 1 \( -type f -o -type l \) -print0)
+    done
+
+    for index in "${!targets[@]}"; do
+        target=${targets[$index]}
+        source=${sources[$index]}
+        resolved_source=$(resolve_path "$source")
+
+        materialize_repo_ancestor "$target"
+
+        if [ -L "$target" ]; then
+            resolved_target=$(resolve_path "$target" || true)
+            if [ "$resolved_target" = "$resolved_source" ]; then
+                echo "CURRENT     $target -> $resolved_source"
+                continue
+            fi
+            echo "RELINK      $target -> $resolved_source"
+            if [ "$action" = "link" ]; then
+                unlink "$target"
+            fi
+        elif [ -e "$target" ]; then
+            relative=${target#"$HOME"/}
+            echo "BACKUP      $target -> $backup_root/$relative"
+            if [ "$action" = "link" ]; then
+                mkdir -p "$(dirname "$backup_root/$relative")"
+                mv "$target" "$backup_root/$relative"
+            fi
+        else
+            echo "LINK        $target -> $resolved_source"
+        fi
+
+        if [ "$action" = "link" ]; then
+            mkdir -p "$(dirname "$target")"
+            ln -s "$resolved_source" "$target"
+        fi
+    done
+}
+
+case "${1:-}" in
+    check)
+        [ "$#" -eq 1 ] || usage
+        ;;
+    link)
+        if [ "$#" -eq 1 ]; then
+            action=link
+        elif [ "$#" -eq 2 ] && [ "$2" = "--dry-run" ]; then
+            action=plan
+        else
+            usage
+        fi
+        ;;
+    *)
+        usage
+        ;;
+esac
+
+[ -d "$profile_root" ] || {
+    echo "No matching host profile found for hostname: $host" >&2
+    exit 1
+}
+
+"$1"
