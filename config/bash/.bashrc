@@ -3,7 +3,17 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-PROMPT_COMMAND='branch=$(git branch --show-current 2>/dev/null); PS1="\[$(tput setaf 28)\]${branch:+($branch) }\[$(tput setaf 226)\]\u\[$(tput setaf 220)\]@\[$(tput setaf 214)\]\h \[$(tput setaf 33)\]\w \[$(tput sgr0)\]$ "; case $TERM in linux|dumb) ;; *) [ -z "${INSIDE_EMACS:-}" ] && PS1="\[\e]0;\u@\h: \w\a\]$PS1" ;; esac'
+# Below 256 colours (linux console, xterm, screen) these codes come out wrong,
+# and an unknown TERM makes tput print errors, so the prompt goes uncoloured.
+if [ "$(tput colors 2>/dev/null)" -ge 256 ] 2>/dev/null; then
+    ps1_branch="\[$(tput setaf 28)\]"
+    ps1_user="\[$(tput setaf 226)\]"
+    ps1_at="\[$(tput setaf 220)\]"
+    ps1_host="\[$(tput setaf 214)\]"
+    ps1_dir="\[$(tput setaf 33)\]"
+    ps1_reset="\[$(tput sgr0)\]"
+fi
+PROMPT_COMMAND='branch=$(git branch --show-current 2>/dev/null); PS1="${ps1_branch}${branch:+($branch) }${ps1_user}\u${ps1_at}@${ps1_host}\h ${ps1_dir}\w ${ps1_reset}$ "; case $TERM in linux|dumb) ;; *) [ -z "${INSIDE_EMACS:-}" ] && PS1="\[\e]0;\u@\h: \w\a\]$PS1" ;; esac'
 
 # Exports
 export DOTFILES="$HOME/Dev/dotfiles"
