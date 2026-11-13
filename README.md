@@ -15,7 +15,8 @@ Preview or apply:
 ./bin/dotfiles link
 ```
 
-NixOS hosts don't use profiles; home-manager picks files from this repo directly.
+NixOS hosts don't use profiles; home-manager picks files from this repo directly, and
+`link` refuses to run on them.
 
 Config content lives in `config/<program>/`. Everything under `profiles/` is a
 relative symlink into `config/`, except `checks/`. Nothing in `config/` is

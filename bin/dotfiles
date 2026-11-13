@@ -212,4 +212,9 @@ esac
     exit 1
 }
 
+if [ "$1" = link ] && [ -e /etc/NIXOS ]; then
+    echo "dotfiles: NixOS hosts are managed by home-manager; refusing to link" >&2
+    exit 1
+fi
+
 "$1"
