@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# Links this repo's dotfiles into $HOME.
+#
+# Each layer under profiles/ mirrors $HOME: profiles/<layer>/<path> is linked
+# to ~/<path>. Layers apply in order (shared, then the platform matching
+# `uname -s`), and a later layer overrides an earlier one at the same path.
 set -euo pipefail
 
 usage() {
@@ -7,7 +12,7 @@ usage() {
 }
 
 repo=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)
-platform=$(uname -s | tr '[:upper:]' '[:lower:]')
+platform=$(uname -s | tr '[:upper:]' '[:lower:]')  # darwin, linux
 platform_root="$repo/profiles/platforms/$platform"
 layers=("$repo/profiles/shared" "$platform_root")
 
@@ -19,7 +24,9 @@ check() {
     for layer in "${layers[@]}"; do
         file="$layer/checks/commands"
         [ -f "$file" ] || continue
+        # `|| [ -n ]` keeps a last line that has no trailing newline.
         while IFS= read -r item || [ -n "$item" ]; do
+            # Strip comments, then trailing and leading whitespace.
             item=${item%%#*}
             item=${item%"${item##*[![:space:]]}"}
             item=${item#"${item%%[![:space:]]*}"}
@@ -43,6 +50,8 @@ check() {
     fi
 }
 
+# Prints the absolute path a symlink chain ends at (portable `readlink -f`).
+# Fails when the final path's parent folder doesn't exist, e.g. a broken link.
 resolve_path() {
     local path="$1" link directory
     while [ -L "$path" ]; do
@@ -57,6 +66,10 @@ resolve_path() {
     printf '%s/%s\n' "$directory" "$(basename "$path")"
 }
 
+# Makes sure every parent folder of a target is a real folder before linking
+# into it. A parent that is a link into this repo (e.g. a whole folder linked
+# by an earlier run) is replaced with an empty real folder; a parent linking
+# anywhere else is never touched, and the run stops.
 materialize_repo_ancestor() {
     local target="$1" relative part current="$HOME"
     relative=${target#"$HOME"/}
@@ -87,6 +100,8 @@ materialize_repo_ancestor() {
 }
 
 link() {
+    # Parallel arrays (bash 3.2 on macOS has no associative arrays):
+    # targets[i] is a path in $HOME, sources[i] the layer entry that wins for it.
     local -a sources=() targets=()
     local layer source relative target target_index index resolved_source resolved_target
     local backup_root
@@ -110,17 +125,21 @@ link() {
             else
                 sources[$target_index]="$source"
             fi
+        # find doesn't follow symlinks, so a linked folder such as
+        # .config/nvim -> config/nvim is one entry, not every file inside it.
         done < <(find "$layer" -mindepth 1 \( -type f -o -type l \) -print0)
     done
 
     for index in "${!targets[@]}"; do
         target=${targets[$index]}
         source=${sources[$index]}
+        # Links in $HOME point at the real file, not at the profiles/ entry.
         resolved_source=$(resolve_path "$source")
 
         materialize_repo_ancestor "$target"
 
         if [ -L "$target" ]; then
+            # Broken links fail to resolve and fall through to RELINK.
             resolved_target=$(resolve_path "$target" || true)
             if [ "$resolved_target" = "$resolved_source" ]; then
                 echo "CURRENT     $target -> $resolved_source"
@@ -147,6 +166,10 @@ link() {
         fi
     done
 
+    # Prune links left behind by entries deleted from the repo. Only links this
+    # script could have made qualify: absolute paths into the repo whose target
+    # no longer exists. Links that still resolve are left alone. ~/Library is
+    # skipped for speed, and the repo for its own internal relative links.
     local stale
     while IFS= read -r -d '' stale; do
         [ -e "$stale" ] && continue
