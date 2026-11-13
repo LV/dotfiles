@@ -8,7 +8,8 @@ PROMPT_COMMAND='branch=$(git branch --show-current 2>/dev/null); PS1="\[$(tput s
 # Exports
 export DOTFILES="$HOME/Dev/dotfiles"
 export EDITOR="nvim"
-export PATH="$HOME/.local/bin:$DOTFILES/bin:$PATH"
+[ -e /etc/NIXOS ] || export PATH="$DOTFILES/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
 
 # Aliases
