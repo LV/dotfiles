@@ -146,6 +146,16 @@ link() {
             ln -s "$resolved_source" "$target"
         fi
     done
+
+    local stale
+    while IFS= read -r -d '' stale; do
+        [ -e "$stale" ] && continue
+        echo "PRUNE       $stale -> $(readlink "$stale")"
+        if [ "$action" = "link" ]; then
+            unlink "$stale"
+        fi
+    done < <(find "$HOME" -maxdepth 4 \( -path "$HOME/Library" -o -path "$repo" \) -prune \
+        -o -type l -lname "$repo/*" -print0 2>/dev/null)
 }
 
 case "${1:-}" in
