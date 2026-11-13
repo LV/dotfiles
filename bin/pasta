@@ -5,9 +5,15 @@ set -o pipefail
 
 if hash pbpaste 2>/dev/null; then
 	exec pbpaste
-elif hash xclip 2>/dev/null; then
+elif [ -n "${DISPLAY:-}" ] && hash xclip 2>/dev/null; then
 	exec xclip -selection clipboard -o
-else
-	echo 'cannot find a paste program' >&2
+elif [ -n "${DISPLAY:-}" ] && hash xsel 2>/dev/null; then
+	exec xsel --clipboard --output
+fi
+
+file=${XDG_STATE_HOME:-$HOME/.local/state}/clipboard
+if [ ! -f "$file" ]; then
+	echo 'pasta: no saved clipboard; send some text to copy first' >&2
 	exit 1
 fi
+exec cat "$file"

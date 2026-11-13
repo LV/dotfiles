@@ -39,20 +39,50 @@ set -o pipefail
 #       Re-run your last command and copy its output
 #       (bash history expansion — only works if it's safe/cheap to re-run).
 #
-# Note: `copy foo.bar` (passing a filename as an argument) does NOT work —
-# this script only reads from stdin, it never looks at $@.
+# Note: `copy foo.bar` (passing a filename as an argument) is rejected —
+# this script only reads from stdin.
+#
+# Without a usable local clipboard (headless, SSH), the text is saved to
+# ${XDG_STATE_HOME:-~/.local/state}/clipboard for `pasta`, and sent to the
+# terminal as OSC 52 so it lands in the local clipboard.
 
-if hash pbcopy 2>/dev/null; then
-	cmd='pbcopy'
-elif hash xclip 2>/dev/null; then
-	cmd='xclip -selection clipboard'
-elif hash xsel 2>/dev/null; then
-	cmd='xsel --clipboard --input'
-elif hash clip.exe 2>/dev/null; then
-	cmd='clip.exe'
-else
-	echo 'cannot find a copy program' >&2
-	exit 1
+if [ $# -gt 0 ]; then
+	echo 'usage: copy < input (reads stdin only)' >&2
+	exit 2
 fi
 
-exec perl -pe 'chomp if eof' | $cmd
+contents=$(cat)
+
+cmd=''
+if hash pbcopy 2>/dev/null; then
+	cmd='pbcopy'
+elif hash clip.exe 2>/dev/null; then
+	cmd='clip.exe'
+elif [ -n "${DISPLAY:-}" ] && hash xclip 2>/dev/null; then
+	cmd='xclip -selection clipboard'
+elif [ -n "${DISPLAY:-}" ] && hash xsel 2>/dev/null; then
+	cmd='xsel --clipboard --input'
+fi
+
+if [ -n "$cmd" ]; then
+	printf '%s' "$contents" | $cmd
+	exit 0
+fi
+
+umask 077
+dir=${XDG_STATE_HOME:-$HOME/.local/state}
+mkdir -p "$dir"
+tmp=''
+trap 'rm -f "$tmp"' EXIT
+tmp=$(mktemp "$dir/.clipboard.XXXXXX")
+printf '%s' "$contents" >"$tmp"
+mv -f "$tmp" "$dir/clipboard"
+
+case ${TERM:-} in
+linux | dumb | '') exit 0 ;;
+esac
+
+# No controlling terminal (e.g. run by Neovim, which sends its own OSC 52): skip.
+if { exec 3>/dev/tty; } 2>/dev/null; then
+	printf '\033]52;c;%s\a' "$(printf '%s' "$contents" | base64 | tr -d '\n')" >&3
+fi
