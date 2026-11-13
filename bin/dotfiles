@@ -171,7 +171,7 @@ link() {
     # Only links this script could have made qualify: absolute paths into the
     # repo. ~/Library is skipped for speed, and the repo for its own internal
     # relative links.
-    local stale managed
+    local stale managed directory
     while IFS= read -r -d '' stale; do
         managed=false
         for target in "${targets[@]}"; do
@@ -184,6 +184,13 @@ link() {
         echo "PRUNE       $stale -> $(readlink "$stale")"
         if [ "$action" = "link" ]; then
             unlink "$stale"
+            # rmdir only removes empty folders, so this stops at the first
+            # folder that still holds anything (or at $HOME).
+            directory=$(dirname "$stale")
+            while [ "$directory" != "$HOME" ] && rmdir "$directory" 2>/dev/null; do
+                echo "RMDIR       $directory"
+                directory=$(dirname "$directory")
+            done
         fi
     done < <(find "$HOME" -maxdepth 4 \( -path "$HOME/Library" -o -path "$repo" \) -prune \
         -o -type l -lname "$repo/*" -print0 2>/dev/null)
