@@ -53,7 +53,7 @@ resolve_path() {
             path="$(dirname "$path")/$link"
         fi
     done
-    directory=$(cd -P "$(dirname "$path")" && pwd)
+    directory=$(cd -P "$(dirname "$path")" 2>/dev/null && pwd) || return 1
     printf '%s/%s\n' "$directory" "$(basename "$path")"
 }
 
